@@ -5,6 +5,14 @@ import (
 	"fmt"
 )
 
+// constants
+const SHA1 = 0x11
+const SHA2_256 = 0x12
+const SHA2_512 = 0x13
+const SHA3 = 0x14
+const BLAKE2B = 0x40
+const BLAKE2S = 0x41
+
 var Names = map[string]int{
 	"sha1":     0x11,
 	"sha2-256": 0x12,
