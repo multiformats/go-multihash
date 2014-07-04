@@ -38,6 +38,20 @@ type DecodedMultihash struct {
   Digest []byte
 }
 
+type Multihash []byte
+
+func Cast(buf []byte) (Multihash, error) {
+  dm, err := Decode(buf)
+  if err != nil {
+    return Multihash{}, err
+  }
+
+  if !ValidCode(dm.Code) {
+    return Multihash{}, fmt.Errorf("unknown multihash code");
+  }
+
+  return Multihash(buf), nil
+}
 
 // Decodes a hash from the given Multihash.
 func Decode(buf []byte) (*DecodedMultihash, error) {

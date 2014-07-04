@@ -134,3 +134,28 @@ func TestAppCode(t *testing.T) {
     }
   }
 }
+
+func TestCast(t *testing.T) {
+  for _, tc := range testCases {
+    ob, err := hex.DecodeString(tc.hex)
+    if err != nil {
+      t.Error(err)
+      continue
+    }
+
+    pre := make([]byte, 2)
+    pre[0] = byte(uint8(tc.code))
+    pre[1] = byte(uint8(len(ob)))
+    nb := append(pre, ob...)
+
+    if _, err := Cast(nb); err != nil {
+      t.Error(err)
+      continue
+    }
+
+    if _, err = Cast(ob); err == nil {
+      t.Error("cast failed to detect non-multihash")
+      continue
+    }
+  }
+}
