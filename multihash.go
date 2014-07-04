@@ -1,6 +1,7 @@
 package multihash
 
 import (
+	"encoding/hex"
 	"fmt"
 )
 
@@ -39,6 +40,19 @@ type DecodedMultihash struct {
 }
 
 type Multihash []byte
+
+func (m Multihash) HexString() string {
+	return hex.EncodeToString([]byte(m))
+}
+
+func FromHexString(s string) (Multihash, error) {
+	b, err := hex.DecodeString(s)
+	if err != nil {
+		return Multihash{}, err
+	}
+
+	return Cast(b)
+}
 
 func Cast(buf []byte) (Multihash, error) {
 	dm, err := Decode(buf)

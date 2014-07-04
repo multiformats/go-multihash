@@ -158,3 +158,35 @@ func TestCast(t *testing.T) {
 		}
 	}
 }
+
+func TestHex(t *testing.T) {
+	for _, tc := range testCases {
+		ob, err := hex.DecodeString(tc.hex)
+		if err != nil {
+			t.Error(err)
+			continue
+		}
+
+		pre := make([]byte, 2)
+		pre[0] = byte(uint8(tc.code))
+		pre[1] = byte(uint8(len(ob)))
+		nb := append(pre, ob...)
+
+		hs := hex.EncodeToString(nb)
+		mh, err := FromHexString(hs)
+		if err != nil {
+			t.Error(err)
+			continue
+		}
+
+		if !bytes.Equal(mh, nb) {
+			t.Error("FromHexString failed", nb, mh)
+			continue
+		}
+
+		if mh.HexString() != hs {
+			t.Error("Multihash.HexString failed", hs, mh.HexString)
+			continue
+		}
+	}
+}
