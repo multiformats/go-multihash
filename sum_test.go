@@ -40,5 +40,20 @@ func TestSum(t *testing.T) {
 		if !bytes.Equal(m1, m2) {
 			t.Error(tc.code, "sum failed.", m1, m2)
 		}
+
+		s1 := m1.HexString()
+		if s1 != tc.hex {
+			t.Error("hex strings not the same")
+		}
+
+		s2 := m1.B58String()
+		m3, err := FromB58String(s2)
+		if err != nil {
+			t.Error("failed to decode b58")
+		} else if !bytes.Equal(m3, m1) {
+			t.Error("b58 failing bytes")
+		} else if s2 != m3.B58String() {
+			t.Error("b58 failing string")
+		}
 	}
 }

@@ -3,6 +3,7 @@ package multihash
 import (
 	"encoding/hex"
 	"fmt"
+	b58 "github.com/jbenet/go-base58"
 )
 
 // constants
@@ -59,6 +60,24 @@ func FromHexString(s string) (Multihash, error) {
 		return Multihash{}, err
 	}
 
+	return Cast(b)
+}
+
+func (m Multihash) B58String() string {
+	return b58.Encode([]byte(m))
+}
+
+func FromB58String(s string) (m Multihash, err error) {
+	// panic handler, in case we try accessing bytes incorrectly.
+	defer func() {
+		if e := recover(); e != nil {
+			m = Multihash{}
+			err = e.(error)
+		}
+	}()
+
+	//b58 smells like it can panic...
+	b := b58.Decode(s)
 	return Cast(b)
 }
 
