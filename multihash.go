@@ -157,5 +157,5 @@ func ValidCode(code int) bool {
 
 // Checks whether a multihash code is part of the App range.
 func AppCode(code int) bool {
-	return code > 0 && code < 0x10
+	return code >= 0 && code < 0x10
 }
