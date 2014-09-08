@@ -127,7 +127,7 @@ func TestValidCode(t *testing.T) {
 
 func TestAppCode(t *testing.T) {
 	for i := 0; i < 0xff; i++ {
-		b := i > 0 && i < 0x10
+		b := i >= 0 && i < 0x10
 		if AppCode(i) != b {
 			t.Error("AppCode incorrect for: ", i)
 		}
