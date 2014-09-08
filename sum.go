@@ -1,11 +1,12 @@
 package multihash
 
 import (
-	sha3 "code.google.com/p/go.crypto/sha3"
 	"crypto/sha1"
 	"crypto/sha256"
 	"crypto/sha512"
 	"fmt"
+
+	sha3 "code.google.com/p/go.crypto/sha3"
 )
 
 func Sum(data []byte, code int, length int) (Multihash, error) {
@@ -60,7 +61,7 @@ func sumSHA512(data []byte) []byte {
 }
 
 func sumSHA3(data []byte) ([]byte, error) {
-	h := sha3.NewKeccak512()
+	h := sha3.New512()
 	if _, err := h.Write(data); err != nil {
 		return nil, err
 	}
