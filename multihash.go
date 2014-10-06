@@ -3,6 +3,7 @@ package multihash
 import (
 	"encoding/hex"
 	"fmt"
+
 	b58 "github.com/jbenet/go-base58"
 )
 
@@ -50,8 +51,12 @@ type DecodedMultihash struct {
 
 type Multihash []byte
 
-func (m Multihash) HexString() string {
-	return hex.EncodeToString([]byte(m))
+func (m *Multihash) HexString() string {
+	return hex.EncodeToString([]byte(*m))
+}
+
+func (m *Multihash) String() string {
+	return m.HexString()
 }
 
 func FromHexString(s string) (Multihash, error) {
