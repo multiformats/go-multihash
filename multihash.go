@@ -99,6 +99,15 @@ func Cast(buf []byte) (Multihash, error) {
 	return Multihash(buf), nil
 }
 
+func (m Multihash) MarshalText() (text []byte, err error) {
+	return []byte(b58.Encode([]byte(m))), nil
+}
+
+func (m *Multihash) UnmarshalText(text []byte) error {
+	*m = b58.Decode(string(text))
+	return nil
+}
+
 // Decodes a hash from the given Multihash.
 func Decode(buf []byte) (*DecodedMultihash, error) {
 
