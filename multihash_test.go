@@ -190,3 +190,38 @@ func TestHex(t *testing.T) {
 		}
 	}
 }
+
+func TestTextMarshalerUnmarshaler(t *testing.T) {
+	mh1, mh2 := new(Multihash), new(Multihash)
+	for _, tc := range testCases {
+		b, _ := hex.DecodeString(tc.hex)
+		*mh1 = b
+
+		text, err := mh1.MarshalText()
+		if err != nil {
+			t.Error(err)
+			continue
+		}
+
+		err = mh2.UnmarshalText(text)
+		if err != nil {
+			t.Error(err)
+			continue
+		}
+
+		if mh2.HexString() != tc.hex {
+			t.Errorf("Marshal/UnmarshalText produced inconsistant results,\nwanted %q, got %q", tc.hex, mh2.HexString())
+		}
+
+	}
+}
+
+func BenchmarkMarshalUnmarshal(b *testing.B) {
+	mh := new(Multihash)
+	for i := 0; i < b.N; i++ {
+		*mh, _ = Sum(*mh, SHA3, -1)
+
+		text, _ := mh.MarshalText()
+		mh.UnmarshalText(text)
+	}
+}
