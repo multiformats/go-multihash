@@ -3,6 +3,7 @@ package multihash
 import (
 	"bytes"
 	"encoding/hex"
+	"fmt"
 	"testing"
 )
 
@@ -66,6 +67,17 @@ func TestEncode(t *testing.T) {
 	}
 }
 
+func ExampleEncodeName() {
+	// ignores errors for simplicity - don't do that at home.
+	buf, _ := hex.DecodeString("0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33")
+	mhbuf, _ := EncodeName(buf, "sha1")
+	mhhex := hex.EncodeToString(mhbuf)
+	fmt.Printf("hex: %v\n", mhhex)
+
+	// Output:
+	// hex: 11140beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33
+}
+
 func TestDecode(t *testing.T) {
 	for _, tc := range testCases {
 		ob, err := hex.DecodeString(tc.hex)
@@ -112,6 +124,18 @@ func TestTable(t *testing.T) {
 			t.Error("Table mismatch: ", Names[v], k)
 		}
 	}
+}
+
+func ExampleDecode() {
+	// ignores errors for simplicity - don't do that at home.
+	buf, _ := hex.DecodeString("0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33")
+	mhbuf, _ := EncodeName(buf, "sha1")
+	o, _ := Decode(mhbuf)
+	mhhex := hex.EncodeToString(o.Digest)
+	fmt.Printf("obj: %v 0x%x %d %s\n", o.Name, o.Code, o.Length, mhhex)
+
+	// Output:
+	// obj: sha1 0x11 20 0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33
 }
 
 func TestValidCode(t *testing.T) {
