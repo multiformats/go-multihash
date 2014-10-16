@@ -10,7 +10,7 @@ import (
 
 // errors
 var (
-	ErrorUknownCode    = errors.New("unknown multihash code")
+	ErrUnknownCode    = errors.New("unknown multihash code")
 	ErrTooShort        = errors.New("multihash too short. must be > 3 bytes")
 	ErrTooLong         = errors.New("multihash too long. must be < 129 bytes")
 	ErrLenNotSupported = errors.New("multihash does not yet support digests longer than 127 bytes")
@@ -116,7 +116,7 @@ func Cast(buf []byte) (Multihash, error) {
 	}
 
 	if !ValidCode(dm.Code) {
-		return Multihash{}, ErrorUknownCode
+		return Multihash{}, ErrUnknownCode
 	}
 
 	return Multihash(buf), nil
@@ -152,7 +152,7 @@ func Decode(buf []byte) (*DecodedMultihash, error) {
 func Encode(buf []byte, code int) ([]byte, error) {
 
 	if !ValidCode(code) {
-		return nil, ErrorUknownCode
+		return nil, ErrUnknownCode
 	}
 
 	if len(buf) > 127 {
