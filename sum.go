@@ -4,10 +4,13 @@ import (
 	"crypto/sha1"
 	"crypto/sha256"
 	"crypto/sha512"
+	"errors"
 	"fmt"
 
 	sha3 "code.google.com/p/go.crypto/sha3"
 )
+
+var ErrSumNotSupported = errors.New("Function not implemented. Complain to lib maintainer.")
 
 func Sum(data []byte, code int, length int) (Multihash, error) {
 	m := Multihash{}
@@ -27,7 +30,7 @@ func Sum(data []byte, code int, length int) (Multihash, error) {
 	case SHA3:
 		d, err = sumSHA3(data)
 	default:
-		return m, fmt.Errorf("Function not implemented. Complain to lib maintainer.")
+		return m, ErrSumNotSupported
 	}
 
 	if err != nil {
