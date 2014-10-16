@@ -190,3 +190,36 @@ func TestHex(t *testing.T) {
 		}
 	}
 }
+
+func BenchmarkEncode(b *testing.B) {
+	tc := testCases[0]
+	ob, err := hex.DecodeString(tc.hex)
+	if err != nil {
+		b.Error(err)
+		return
+	}
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		Encode(ob, tc.code)
+	}
+}
+
+func BenchmarkDecode(b *testing.B) {
+	tc := testCases[0]
+	ob, err := hex.DecodeString(tc.hex)
+	if err != nil {
+		b.Error(err)
+		return
+	}
+
+	pre := make([]byte, 2)
+	pre[0] = byte(uint8(tc.code))
+	pre[1] = byte(uint8(len(ob)))
+	nb := append(pre, ob...)
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		Decode(nb)
+	}
+}
