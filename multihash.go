@@ -2,10 +2,27 @@ package multihash
 
 import (
 	"encoding/hex"
+	"errors"
 	"fmt"
 
 	b58 "github.com/jbenet/go-base58"
 )
+
+// errors
+var (
+	ErrorUknownCode    = errors.New("unknown multihash code")
+	ErrTooShort        = errors.New("multihash too short. must be > 3 bytes")
+	ErrTooLong         = errors.New("multihash too long. must be < 129 bytes")
+	ErrLenNotSupported = errors.New("multihash does not yet support digests longer than 127 bytes")
+)
+
+type ErrInconsistentLen struct {
+	dm *DecodedMultihash
+}
+
+func (e ErrInconsistentLen) Error() string {
+	return fmt.Sprintf("multihash length inconsistent: %v", e.dm)
+}
 
 // constants
 const SHA1 = 0x11
@@ -93,7 +110,7 @@ func Cast(buf []byte) (Multihash, error) {
 	}
 
 	if !ValidCode(dm.Code) {
-		return Multihash{}, fmt.Errorf("unknown multihash code")
+		return Multihash{}, ErrorUknownCode
 	}
 
 	return Multihash(buf), nil
@@ -103,11 +120,11 @@ func Cast(buf []byte) (Multihash, error) {
 func Decode(buf []byte) (*DecodedMultihash, error) {
 
 	if len(buf) < 3 {
-		return nil, fmt.Errorf("multihash too short. must be > 3 bytes.")
+		return nil, ErrTooShort
 	}
 
 	if len(buf) > 129 {
-		return nil, fmt.Errorf("multihash too long. must be < 129 bytes.")
+		return nil, ErrTooLong
 	}
 
 	dm := &DecodedMultihash{
@@ -118,7 +135,7 @@ func Decode(buf []byte) (*DecodedMultihash, error) {
 	}
 
 	if len(dm.Digest) != dm.Length {
-		return nil, fmt.Errorf("multihash length inconsistent: %v", dm)
+		return nil, ErrInconsistentLen{dm}
 	}
 
 	return dm, nil
@@ -129,12 +146,11 @@ func Decode(buf []byte) (*DecodedMultihash, error) {
 func Encode(buf []byte, code int) ([]byte, error) {
 
 	if !ValidCode(code) {
-		return nil, fmt.Errorf("unknown multihash code")
+		return nil, ErrorUknownCode
 	}
 
 	if len(buf) > 127 {
-		m := "multihash does not yet support digests longer than 127 bytes."
-		return nil, fmt.Errorf(m)
+		return nil, ErrLenNotSupported
 	}
 
 	pre := make([]byte, 2)
