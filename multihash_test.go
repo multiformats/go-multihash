@@ -32,6 +32,19 @@ var testCases = []TestCase{
 	TestCase{"0beec7b5ea3f0fdbc9", 0x40, "blake2b"},
 }
 
+func (tc TestCase) Multihash() (Multihash, error) {
+	ob, err := hex.DecodeString(tc.hex)
+	if err != nil {
+		return nil, err
+	}
+
+	b := make([]byte, 2+len(ob))
+	b[0] = byte(uint8(tc.code))
+	b[1] = byte(uint8(len(ob)))
+	copy(b[2:], ob)
+	return Cast(b)
+}
+
 func TestEncode(t *testing.T) {
 	for _, tc := range testCases {
 		ob, err := hex.DecodeString(tc.hex)
@@ -63,6 +76,14 @@ func TestEncode(t *testing.T) {
 
 		if !bytes.Equal(encN, nb) {
 			t.Error("encoded byte mismatch: ", encN, nb)
+		}
+
+		h, err := tc.Multihash()
+		if err != nil {
+			t.Error(err)
+		}
+		if !bytes.Equal(h, nb) {
+			t.Error("Multihash func mismatch.")
 		}
 	}
 }
