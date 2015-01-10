@@ -22,4 +22,10 @@ test_expect_success "'multihash -a=sha1 -e=hex' output looks good" '
 	test_cmp expected actual
 '
 
+test_expect_success SHASUM "check hash using shasum" '
+	echo "$SHA1  hash_me.txt" >actual &&
+	$SHASUMBIN hash_me.txt >expected &&
+	test_cmp expected actual
+'
+
 test_done

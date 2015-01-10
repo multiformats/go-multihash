@@ -33,3 +33,11 @@ SHARNESS_LIB="lib/sharness/sharness.sh"
 
 # Please put go-multihash specific shell functions below
 
+for hashbin in sha1sum shasum; do
+	if type "$hashbin"; then
+		export SHASUMBIN=sha1sum &&
+		test_set_prereq SHASUM &&
+		break
+	fi
+done
+
