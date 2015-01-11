@@ -1,4 +1,7 @@
-test: go_test
+test: go_test other_tests
+
+other_tests:
+	cd test && make test
 
 go_test: go_deps
 	go test ./...
