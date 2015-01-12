@@ -35,7 +35,7 @@ SHARNESS_LIB="lib/sharness/sharness.sh"
 
 for hashbin in sha1sum shasum; do
 	if type "$hashbin"; then
-		export SHASUMBIN=sha1sum &&
+		export SHASUMBIN="$hashbin" &&
 		test_set_prereq SHASUM &&
 		break
 	fi
