@@ -41,15 +41,6 @@ func init() {
 	flag.BoolVar(&quiet, "q", false, quietStr+" (shorthand)")
 }
 
-func strIn(a string, set []string) bool {
-	for _, s := range set {
-		if s == a {
-			return true
-		}
-	}
-	return false
-}
-
 func parseFlags(o *mhopts.Options) error {
 	flag.Parse()
 	if err := o.ParseError(); err != nil {
