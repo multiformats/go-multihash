@@ -16,6 +16,7 @@ var tCodes = map[int]string{
 	0x14: "sha3",
 	0x40: "blake2b",
 	0x41: "blake2s",
+	0x42: "blake2b-256",
 }
 
 type TestCase struct {
