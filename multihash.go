@@ -11,6 +11,7 @@ import (
 // errors
 var (
 	ErrUnknownCode     = errors.New("unknown multihash code")
+	ErrUnknownName     = errors.New("unknown multihash name")
 	ErrTooShort        = errors.New("multihash too short. must be > 3 bytes")
 	ErrTooLong         = errors.New("multihash too long. must be < 129 bytes")
 	ErrLenNotSupported = errors.New("multihash does not yet support digests longer than 127 bytes")
@@ -166,6 +167,10 @@ func Encode(buf []byte, code int) ([]byte, error) {
 }
 
 func EncodeName(buf []byte, name string) ([]byte, error) {
+	if !ValidName(name) {
+		return nil, ErrUnknownName
+	}
+
 	return Encode(buf, Names[name])
 }
 
@@ -185,4 +190,13 @@ func ValidCode(code int) bool {
 // AppCode checks whether a multihash code is part of the App range.
 func AppCode(code int) bool {
 	return code >= 0 && code < 0x10
+}
+
+// ValidName checks whether a multihash name is valid.
+func ValidName(name string) bool {
+	if _, ok := Names[name]; ok {
+		return true
+	}
+
+	return false
 }
