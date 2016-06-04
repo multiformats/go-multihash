@@ -192,7 +192,7 @@ func TestCast(t *testing.T) {
 		pre[1] = byte(uint8(len(ob)))
 		nb := append(pre, ob...)
 
-		if _, err := Cast(nb); err != nil {
+		if _, err = Cast(nb); err != nil {
 			t.Error(err)
 			continue
 		}
@@ -230,7 +230,7 @@ func TestHex(t *testing.T) {
 		}
 
 		if mh.HexString() != hs {
-			t.Error("Multihash.HexString failed", hs, mh.HexString)
+			t.Error("Multihash.HexString failed", hs, mh.HexString())
 			continue
 		}
 	}
