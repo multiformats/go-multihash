@@ -17,9 +17,9 @@ test_expect_success "multihash is available" '
 '
 
 test_expect_success "multihash help output looks good" '
-	test_must_fail multihash -h 2>help.txt &&
-	cat help.txt | egrep -i "^usage:" >/dev/null &&
-	cat help.txt | egrep -i "multihash .*options.*file" >/dev/null
+	multihash -h 2>help.txt &&
+	egrep -i "^usage:" help.txt >/dev/null &&
+	egrep -i "multihash .*options.*file" help.txt >/dev/null
 '
 
 test_done
