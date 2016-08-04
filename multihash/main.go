@@ -23,6 +23,7 @@ var checkRaw string
 var checkMh mh.Multihash
 var inputFilename string
 var quiet bool
+var help bool
 
 func init() {
 	flag.Usage = func() {
@@ -35,6 +36,10 @@ func init() {
 	checkStr := "check checksum matches"
 	flag.StringVar(&checkRaw, "check", "", checkStr)
 	flag.StringVar(&checkRaw, "c", "", checkStr+" (shorthand)")
+
+	helpStr := "display help message"
+	flag.BoolVar(&help, "help", false, helpStr)
+	flag.BoolVar(&help, "h", false, helpStr+" (shorthand)")
 
 	quietStr := "quiet output (no newline on checksum, no error text)"
 	flag.BoolVar(&quiet, "quiet", false, quietStr)
@@ -105,6 +110,11 @@ func main() {
 
 	err := parseFlags(opts)
 	checkErr(err)
+
+	if help {
+		flag.Usage()
+		os.Exit(0)
+	}
 
 	inp, err := getInput()
 	checkErr(err)
