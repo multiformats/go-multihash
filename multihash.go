@@ -10,10 +10,11 @@ import (
 
 // errors
 var (
-	ErrUnknownCode     = errors.New("unknown multihash code")
-	ErrTooShort        = errors.New("multihash too short. must be > 3 bytes")
-	ErrTooLong         = errors.New("multihash too long. must be < 129 bytes")
-	ErrLenNotSupported = errors.New("multihash does not yet support digests longer than 127 bytes")
+	ErrUnknownCode      = errors.New("unknown multihash code")
+	ErrTooShort         = errors.New("multihash too short. must be > 3 bytes")
+	ErrTooLong          = errors.New("multihash too long. must be < 129 bytes")
+	ErrLenNotSupported  = errors.New("multihash does not yet support digests longer than 127 bytes")
+	ErrInvalidMultihash = errors.New("input isn't valid multihash")
 )
 
 // ErrInconsistentLen is returned when a decoded multihash has an inconsistent length
@@ -106,6 +107,10 @@ func FromB58String(s string) (m Multihash, err error) {
 
 	//b58 smells like it can panic...
 	b := b58.Decode(s)
+	if len(b) == 0 {
+		return Multihash{}, ErrInvalidMultihash
+	}
+
 	return Cast(b)
 }
 
