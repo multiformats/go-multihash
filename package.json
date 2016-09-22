@@ -1,0 +1,25 @@
+{
+  "author": "jbenet",
+  "bugs": {},
+  "gx": {
+    "dvcsimport": "github.com/multiformats/go-multihash"
+  },
+  "gxDependencies": [
+    {
+      "hash": "QmT8rehPR3F6bmwL6zjUN8XpiDBFFpMP2myPdC6ApsWfJf",
+      "name": "go-base58",
+      "version": "0.0.0"
+    },
+    {
+      "hash": "Qme1boxspcQWR8FBzMxeppqug2fYgYc15diNWmqgDVnvn2",
+      "name": "go-crypto",
+      "version": "0.0.0"
+    }
+  ],
+  "gxVersion": "0.9.0",
+  "issues_url": "github.com/multiformats/go-multihash/issues",
+  "language": "go",
+  "license": "",
+  "name": "go-multihash",
+  "version": "0.1.0"
+}
