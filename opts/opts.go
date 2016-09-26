@@ -11,7 +11,7 @@ import (
 	"io/ioutil"
 	"strings"
 
-	mh "github.com/jbenet/go-multihash"
+	mh "github.com/multiformats/go-multihash"
 )
 
 // package errors
