@@ -1,0 +1,14 @@
+{
+  "author": "multiformats",
+  "bugs": {
+    "url": "https://github.com/multiformats/go-multihash/issues"
+  },
+  "gx": {
+    "dvcsimport": "github.com/multiformats/go-multihash"
+  },
+  "gxVersion": "0.9.0",
+  "language": "go",
+  "license": "MIT",
+  "name": "go-multihash",
+  "version": "0.1.0"
+}

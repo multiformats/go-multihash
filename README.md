@@ -1,6 +1,6 @@
 # go-multihash
 
-![travis](https://travis-ci.org/jbenet/go-multihash.svg)
+![travis](https://travis-ci.org/multiformats/go-multihash.svg)
 
 [multihash](//github.com/jbenet/multihash) implementation in Go.
 
@@ -12,7 +12,7 @@ package main
 import (
   "encoding/hex"
   "fmt"
-  "github.com/jbenet/go-multihash"
+  "github.com/multiformats/go-multihash"
 )
 
 func main() {
