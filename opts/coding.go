@@ -6,7 +6,7 @@ import (
 	"fmt"
 
 	base58 "github.com/jbenet/go-base58"
-	mh "github.com/jbenet/go-multihash"
+	mh "github.com/multiformats/go-multihash"
 )
 
 func Decode(encoding, digest string) (mh.Multihash, error) {
