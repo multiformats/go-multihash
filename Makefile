@@ -1,11 +1,15 @@
-test: go_test other_tests
+gx:
+	go get github.com/whyrusleeping/gx
+	go get github.com/whyrusleeping/gx-go
 
-other_tests:
-	cd test && make test
+covertools:
+	go get github.com/mattn/goveralls
+	go get golang.org/x/tools/cmd/cover
 
-go_test: go_deps
-	go test -race -cpu=5 -v ./...
+deps: gx covertools
+	gx --verbose install --global
+	gx-go rewrite
 
-go_deps:
-	go get golang.org/x/crypto/sha3
-	go get github.com/jbenet/go-base58
+publish:
+	gx-go rewrite --undo
+
