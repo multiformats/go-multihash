@@ -230,7 +230,7 @@ func TestHex(t *testing.T) {
 		}
 
 		if mh.HexString() != hs {
-			t.Error("Multihash.HexString failed", hs, mh.HexString)
+			t.Error("Multihash.HexString failed", hs, mh.HexString())
 			continue
 		}
 	}
