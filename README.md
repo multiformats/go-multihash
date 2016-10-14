@@ -18,7 +18,7 @@
 ## Install
 
 ```sh
-go get multiformats/multihash
+go get github.com/multiformats/go-multihash
 ```
 
 ## Usage
