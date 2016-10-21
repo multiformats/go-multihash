@@ -33,36 +33,41 @@ const (
 	SHA3     = 0x14
 	BLAKE2B  = 0x40
 	BLAKE2S  = 0x41
+
+	DBL_SHA2_256 = 0x56
 )
 
 // Names maps the name of a hash to the code
 var Names = map[string]int{
-	"sha1":     SHA1,
-	"sha2-256": SHA2_256,
-	"sha2-512": SHA2_512,
-	"sha3":     SHA3,
-	"blake2b":  BLAKE2B,
-	"blake2s":  BLAKE2S,
+	"sha1":         SHA1,
+	"sha2-256":     SHA2_256,
+	"sha2-512":     SHA2_512,
+	"sha3":         SHA3,
+	"blake2b":      BLAKE2B,
+	"blake2s":      BLAKE2S,
+	"dbl-sha2-256": DBL_SHA2_256,
 }
 
 // Codes maps a hash code to it's name
 var Codes = map[int]string{
-	SHA1:     "sha1",
-	SHA2_256: "sha2-256",
-	SHA2_512: "sha2-512",
-	SHA3:     "sha3",
-	BLAKE2B:  "blake2b",
-	BLAKE2S:  "blake2s",
+	SHA1:         "sha1",
+	SHA2_256:     "sha2-256",
+	SHA2_512:     "sha2-512",
+	SHA3:         "sha3",
+	BLAKE2B:      "blake2b",
+	BLAKE2S:      "blake2s",
+	DBL_SHA2_256: "dbl-sha2-256",
 }
 
 // DefaultLengths maps a hash code to it's default length
 var DefaultLengths = map[int]int{
-	SHA1:     20,
-	SHA2_256: 32,
-	SHA2_512: 64,
-	SHA3:     64,
-	BLAKE2B:  64,
-	BLAKE2S:  32,
+	SHA1:         20,
+	SHA2_256:     32,
+	SHA2_512:     64,
+	SHA3:         64,
+	BLAKE2B:      64,
+	BLAKE2S:      32,
+	DBL_SHA2_256: 32,
 }
 
 type DecodedMultihash struct {
