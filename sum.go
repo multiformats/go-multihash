@@ -37,6 +37,8 @@ func Sum(data []byte, code int, length int) (Multihash, error) {
 		d = sumBLAKE2S(data)
 	case BLAKE2B_256:
 		d = sumBLAKE2B_256(data)
+	case BLAKE2B_384:
+		d = sumBLAKE2B_384(data)
 	default:
 		return m, ErrSumNotSupported
 	}
@@ -92,4 +94,9 @@ func sumBLAKE2S(data []byte) []byte {
 func sumBLAKE2B_256(data []byte) []byte {
 	a := blake2b.Sum256(data)
 	return a[0:blake2b.Size256]
+}
+
+func sumBLAKE2B_384(data []byte) []byte {
+	a := blake2b.Sum384(data)
+	return a[0:blake2b.Size384]
 }

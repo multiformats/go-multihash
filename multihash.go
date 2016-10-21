@@ -35,6 +35,7 @@ const (
 	BLAKE2B     = 0x40
 	BLAKE2S     = 0x41
 	BLAKE2B_256 = 0x42
+	BLAKE2B_384 = 0x43
 )
 
 // Names maps the name of a hash to the code
@@ -46,6 +47,7 @@ var Names = map[string]int{
 	"blake2b":     BLAKE2B,
 	"blake2s":     BLAKE2S,
 	"blake2b-256": BLAKE2B_256,
+	"blake2b-384": BLAKE2B_384,
 }
 
 // Codes maps a hash code to it's name
@@ -60,6 +62,7 @@ var DefaultLengths = map[int]int{
 	BLAKE2B:     64,
 	BLAKE2S:     32,
 	BLAKE2B_256: 32,
+	BLAKE2B_384: 48,
 }
 
 type DecodedMultihash struct {
