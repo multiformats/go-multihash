@@ -58,17 +58,17 @@ func Sum(data []byte, code int, length int) (Multihash, error) {
 
 func sumSHA1(data []byte) []byte {
 	a := sha1.Sum(data)
-	return a[0:20]
+	return a[0:sha1.Size]
 }
 
 func sumSHA256(data []byte) []byte {
 	a := sha256.Sum256(data)
-	return a[0:32]
+	return a[0:sha256.Size]
 }
 
 func sumSHA512(data []byte) []byte {
 	a := sha512.Sum512(data)
-	return a[0:64]
+	return a[0:sha512.Size]
 }
 
 func sumSHA3(data []byte) ([]byte, error) {
@@ -81,15 +81,15 @@ func sumSHA3(data []byte) ([]byte, error) {
 
 func sumBLAKE2B(data []byte) []byte {
 	a := blake2b.Sum512(data)
-	return a[0:64]
+	return a[0:blake2b.Size]
 }
 
 func sumBLAKE2S(data []byte) []byte {
 	a := blake2s.Sum256(data)
-	return a[0:32]
+	return a[0:blake2s.Size]
 }
 
 func sumBLAKE2B_256(data []byte) []byte {
 	a := blake2b.Sum256(data)
-	return a[0:32]
+	return a[0:blake2b.Size256]
 }
