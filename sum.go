@@ -7,6 +7,8 @@ import (
 	"errors"
 	"fmt"
 
+	blake2b "golang.org/x/crypto/blake2b"
+	blake2s "golang.org/x/crypto/blake2s"
 	sha3 "golang.org/x/crypto/sha3"
 )
 
@@ -29,6 +31,14 @@ func Sum(data []byte, code int, length int) (Multihash, error) {
 		d = sumSHA512(data)
 	case SHA3:
 		d, err = sumSHA3(data)
+	case BLAKE2B:
+		d = sumBLAKE2B(data)
+	case BLAKE2S:
+		d = sumBLAKE2S(data)
+	case BLAKE2B_256:
+		d = sumBLAKE2B_256(data)
+	case BLAKE2B_384:
+		d = sumBLAKE2B_384(data)
 	default:
 		return m, ErrSumNotSupported
 	}
@@ -50,17 +60,17 @@ func Sum(data []byte, code int, length int) (Multihash, error) {
 
 func sumSHA1(data []byte) []byte {
 	a := sha1.Sum(data)
-	return a[0:20]
+	return a[0:sha1.Size]
 }
 
 func sumSHA256(data []byte) []byte {
 	a := sha256.Sum256(data)
-	return a[0:32]
+	return a[0:sha256.Size]
 }
 
 func sumSHA512(data []byte) []byte {
 	a := sha512.Sum512(data)
-	return a[0:64]
+	return a[0:sha512.Size]
 }
 
 func sumSHA3(data []byte) ([]byte, error) {
@@ -69,4 +79,24 @@ func sumSHA3(data []byte) ([]byte, error) {
 		return nil, err
 	}
 	return h.Sum(nil), nil
+}
+
+func sumBLAKE2B(data []byte) []byte {
+	a := blake2b.Sum512(data)
+	return a[0:blake2b.Size]
+}
+
+func sumBLAKE2S(data []byte) []byte {
+	a := blake2s.Sum256(data)
+	return a[0:blake2s.Size]
+}
+
+func sumBLAKE2B_256(data []byte) []byte {
+	a := blake2b.Sum256(data)
+	return a[0:blake2b.Size256]
+}
+
+func sumBLAKE2B_384(data []byte) []byte {
+	a := blake2b.Sum384(data)
+	return a[0:blake2b.Size384]
 }

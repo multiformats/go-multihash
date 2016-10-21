@@ -21,6 +21,10 @@ var sumTestCases = []SumTestCase{
 	SumTestCase{SHA2_512, 32, "foo", "1320f7fbba6e0636f890e56fbbf3283e524c6fa3204ae298382d624741d0dc663832"},
 	SumTestCase{SHA3, -1, "foo", "14404bca2b137edc580fe50a88983ef860ebaca36c857b1f492839d6d7392452a63c82cbebc68e3b70a2a1480b4bb5d437a7cba6ecf9d89f9ff3ccd14cd6146ea7e7"},
 	SumTestCase{SHA3, 32, "foo", "14204bca2b137edc580fe50a88983ef860ebaca36c857b1f492839d6d7392452a63c"},
+	SumTestCase{BLAKE2B, 64, "foo", "4040ca002330e69d3e6b84a46a56a6533fd79d51d97a3bb7cad6c2ff43b354185d6dc1e723fb3db4ae0737e120378424c714bb982d9dc5bbd7a0ab318240ddd18f8d"},
+	SumTestCase{BLAKE2S, 32, "foo", "412008d6cad88075de8f192db097573d0e829411cd91eb6ec65e8fc16c017edfdb74"},
+	SumTestCase{BLAKE2B_256, 32, "foo", "4220b8fe9f7f6255a6fa08f668ab632a8d081ad87983c77cd274e48ce450f0b349fd"},
+	SumTestCase{BLAKE2B_384, 48, "foo", "4330e629ee880953d32c8877e479e3b4cb0a4c9d5805e2b34c675b5a5863c4ad7d64bb2a9b8257fac9d82d289b3d39eb9cc2"},
 }
 
 func TestSum(t *testing.T) {
