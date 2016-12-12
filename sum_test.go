@@ -2,7 +2,6 @@ package multihash
 
 import (
 	"bytes"
-	"encoding/binary"
 	"encoding/hex"
 	"testing"
 )
@@ -26,6 +25,7 @@ var sumTestCases = []SumTestCase{
 	SumTestCase{DBL_SHA2_256, 32, "foo", "5620c7ade88fc7a21498a6a5e5c385e1f68bed822b72aa63c4a9a48a02c2466ee29e"},
 	SumTestCase{BLAKE2B_MAX, 64, "foo", "c0e40240ca002330e69d3e6b84a46a56a6533fd79d51d97a3bb7cad6c2ff43b354185d6dc1e723fb3db4ae0737e120378424c714bb982d9dc5bbd7a0ab318240ddd18f8d"},
 	SumTestCase{BLAKE2B_MAX - 32, 32, "foo", "a0e40220b8fe9f7f6255a6fa08f668ab632a8d081ad87983c77cd274e48ce450f0b349fd"},
+	SumTestCase{BLAKE2B_MAX - 16, 32, "foo", "b0e40220e629ee880953d32c8877e479e3b4cb0a4c9d5805e2b34c675b5a5863c4ad7d64"},
 	SumTestCase{BLAKE2S_MAX, 32, "foo", "e0e4022008d6cad88075de8f192db097573d0e829411cd91eb6ec65e8fc16c017edfdb74"},
 }
 
@@ -48,8 +48,6 @@ func TestSum(t *testing.T) {
 		if !bytes.Equal(m1, m2) {
 			t.Error(tc.code, Codes[tc.code], "sum failed.", m1, m2)
 			t.Error(hex.EncodeToString(m2))
-			n, _ := binary.Uvarint(m2)
-			t.Error(n)
 		}
 
 		s1 := m1.HexString()
@@ -66,6 +64,20 @@ func TestSum(t *testing.T) {
 		} else if s2 != m3.B58String() {
 			t.Error("b58 failing string")
 		}
+	}
+}
+
+func TestBlakeMissing(t *testing.T) {
+	data := []byte("abc")
+
+	_, err := Sum(data, BLAKE2B_MAX-2, -1)
+	if err == nil {
+		t.Error("blake2b-496 shouldn't be supported")
+	}
+
+	_, err = Sum(data, BLAKE2S_MAX-2, -1)
+	if err == nil {
+		t.Error("blake2s-240 shouldn't be supported")
 	}
 }
 
