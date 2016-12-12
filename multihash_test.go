@@ -14,8 +14,6 @@ var tCodes = map[uint64]string{
 	0x12: "sha2-256",
 	0x13: "sha2-512",
 	0x14: "sha3",
-	0x40: "blake2b",
-	0x41: "blake2s",
 	0x56: "dbl-sha2-256",
 }
 
@@ -30,7 +28,6 @@ var testCases = []TestCase{
 	TestCase{"0beec7b5", 0x11, "sha1"},
 	TestCase{"2c26b46b68ffc68ff99b453c1d30413413422d706483bfa0f98a5e886266e7ae", 0x12, "sha2-256"},
 	TestCase{"2c26b46b", 0x12, "sha2-256"},
-	TestCase{"0beec7b5ea3f0fdbc9", 0x40, "blake2b"},
 }
 
 func (tc TestCase) Multihash() (Multihash, error) {
