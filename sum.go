@@ -41,7 +41,7 @@ func Sum(data []byte, code int, length int) (Multihash, error) {
 		d, err = sumSHA3(data)
 	case DBL_SHA2_256:
 		d = sumSHA256(sumSHA256(data))
-	case BLAKE2B:
+	case 0:
 		switch length {
 		case 32:
 			out := blake2b.Sum256(data)
@@ -55,7 +55,7 @@ func Sum(data []byte, code int, length int) (Multihash, error) {
 		default:
 			return nil, fmt.Errorf("unsupported length for blake2b")
 		}
-	case BLAKE2S:
+	case 1:
 		out := blake2s.Sum256(data)
 		d = out[:]
 	default:

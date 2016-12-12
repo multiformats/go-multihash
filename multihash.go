@@ -1,6 +1,7 @@
 package multihash
 
 import (
+	"encoding/binary"
 	"encoding/hex"
 	"errors"
 	"fmt"
@@ -32,11 +33,34 @@ const (
 	SHA2_256 = 0x12
 	SHA2_512 = 0x13
 	SHA3     = 0x14
-	BLAKE2B  = 0x40
-	BLAKE2S  = 0x41
+
+	BLAKE2B_MIN = 0xb201
+	BLAKE2B_MAX = 0xb240
+	BLAKE2S_MIN = 0xb241
+	BLAKE2S_MAX = 0xb260
 
 	DBL_SHA2_256 = 0x56
 )
+
+func init() {
+	// Add blake2b (64 codes)
+	for c := uint64(BLAKE2B_MIN); c <= BLAKE2B_MAX; c++ {
+		n := c - BLAKE2B_MIN + 1
+		name := fmt.Sprintf("blake2b-%d", n*8)
+		Names[name] = c
+		Codes[c] = name
+		DefaultLengths[c] = n
+	}
+
+	// Add blake2s (32 codes)
+	for c := uint64(BLAKE2S_MIN); c <= BLAKE2S_MAX; c++ {
+		n := c - BLAKE2S_MIN + 1
+		name := fmt.Sprintf("blake2s-%d", n*8)
+		Names[name] = c
+		Codes[c] = name
+		DefaultLengths[c] = n
+	}
+}
 
 // Names maps the name of a hash to the code
 var Names = map[string]int{
@@ -44,8 +68,6 @@ var Names = map[string]int{
 	"sha2-256":     SHA2_256,
 	"sha2-512":     SHA2_512,
 	"sha3":         SHA3,
-	"blake2b":      BLAKE2B,
-	"blake2s":      BLAKE2S,
 	"dbl-sha2-256": DBL_SHA2_256,
 }
 
@@ -55,8 +77,6 @@ var Codes = map[int]string{
 	SHA2_256:     "sha2-256",
 	SHA2_512:     "sha2-512",
 	SHA3:         "sha3",
-	BLAKE2B:      "blake2b",
-	BLAKE2S:      "blake2s",
 	DBL_SHA2_256: "dbl-sha2-256",
 }
 
@@ -66,8 +86,6 @@ var DefaultLengths = map[int]int{
 	SHA2_256:     32,
 	SHA2_512:     64,
 	SHA3:         64,
-	BLAKE2B:      64,
-	BLAKE2S:      32,
 	DBL_SHA2_256: 32,
 }
 
