@@ -2,6 +2,8 @@ package multihash
 
 import (
 	"bytes"
+	"encoding/binary"
+	"encoding/hex"
 	"testing"
 )
 
@@ -22,6 +24,9 @@ var sumTestCases = []SumTestCase{
 	SumTestCase{SHA3, -1, "foo", "14404bca2b137edc580fe50a88983ef860ebaca36c857b1f492839d6d7392452a63c82cbebc68e3b70a2a1480b4bb5d437a7cba6ecf9d89f9ff3ccd14cd6146ea7e7"},
 	SumTestCase{SHA3, 32, "foo", "14204bca2b137edc580fe50a88983ef860ebaca36c857b1f492839d6d7392452a63c"},
 	SumTestCase{DBL_SHA2_256, 32, "foo", "5620c7ade88fc7a21498a6a5e5c385e1f68bed822b72aa63c4a9a48a02c2466ee29e"},
+	SumTestCase{BLAKE2B_MAX, 64, "foo", "c0e40240ca002330e69d3e6b84a46a56a6533fd79d51d97a3bb7cad6c2ff43b354185d6dc1e723fb3db4ae0737e120378424c714bb982d9dc5bbd7a0ab318240ddd18f8d"},
+	SumTestCase{BLAKE2B_MAX - 32, 32, "foo", "a0e40220b8fe9f7f6255a6fa08f668ab632a8d081ad87983c77cd274e48ce450f0b349fd"},
+	SumTestCase{BLAKE2S_MAX, 32, "foo", "e0e4022008d6cad88075de8f192db097573d0e829411cd91eb6ec65e8fc16c017edfdb74"},
 }
 
 func TestSum(t *testing.T) {
@@ -41,7 +46,10 @@ func TestSum(t *testing.T) {
 		}
 
 		if !bytes.Equal(m1, m2) {
-			t.Error(tc.code, "sum failed.", m1, m2)
+			t.Error(tc.code, Codes[tc.code], "sum failed.", m1, m2)
+			t.Error(hex.EncodeToString(m2))
+			n, _ := binary.Uvarint(m2)
+			t.Error(n)
 		}
 
 		s1 := m1.HexString()

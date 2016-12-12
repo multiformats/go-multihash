@@ -30,19 +30,19 @@ func Sum(data []byte, code uint64, length int) (Multihash, error) {
 	}
 
 	var d []byte
-	switch code {
-	case SHA1:
-		d = sumSHA1(data)
-	case SHA2_256:
-		d = sumSHA256(data)
-	case SHA2_512:
-		d = sumSHA512(data)
-	case SHA3:
-		d, err = sumSHA3(data)
-	case DBL_SHA2_256:
-		d = sumSHA256(sumSHA256(data))
-	case 0:
-		switch length {
+	switch {
+	case isBlake2s(code):
+		olen := code - BLAKE2S_MIN + 1
+		switch olen {
+		case 32:
+			out := blake2s.Sum256(data)
+			d = out[:]
+		default:
+			return nil, fmt.Errorf("unsupported length for blake2s: %d", olen)
+		}
+	case isBlake2b(code):
+		olen := code - BLAKE2B_MIN + 1
+		switch olen {
 		case 32:
 			out := blake2b.Sum256(data)
 			d = out[:]
@@ -53,20 +53,35 @@ func Sum(data []byte, code uint64, length int) (Multihash, error) {
 			out := blake2b.Sum512(data)
 			d = out[:]
 		default:
-			return nil, fmt.Errorf("unsupported length for blake2b")
+			return nil, fmt.Errorf("unsupported length for blake2b: %d", olen)
 		}
-	case 1:
-		out := blake2s.Sum256(data)
-		d = out[:]
 	default:
-		return m, ErrSumNotSupported
+		switch code {
+		case SHA1:
+			d = sumSHA1(data)
+		case SHA2_256:
+			d = sumSHA256(data)
+		case SHA2_512:
+			d = sumSHA512(data)
+		case SHA3:
+			d, err = sumSHA3(data)
+		case DBL_SHA2_256:
+			d = sumSHA256(sumSHA256(data))
+		default:
+			return m, ErrSumNotSupported
+		}
 	}
-
 	if err != nil {
 		return m, err
 	}
-
 	return Encode(d[0:length], code)
+}
+
+func isBlake2s(code uint64) bool {
+	return code >= BLAKE2S_MIN && code <= BLAKE2S_MAX
+}
+func isBlake2b(code uint64) bool {
+	return code >= BLAKE2B_MIN && code <= BLAKE2B_MAX
 }
 
 func sumSHA1(data []byte) []byte {
