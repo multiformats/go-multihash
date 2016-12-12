@@ -39,7 +39,7 @@ const (
 )
 
 // Names maps the name of a hash to the code
-var Names = map[string]int{
+var Names = map[string]uint64{
 	"sha1":         SHA1,
 	"sha2-256":     SHA2_256,
 	"sha2-512":     SHA2_512,
@@ -50,7 +50,7 @@ var Names = map[string]int{
 }
 
 // Codes maps a hash code to it's name
-var Codes = map[int]string{
+var Codes = map[uint64]string{
 	SHA1:         "sha1",
 	SHA2_256:     "sha2-256",
 	SHA2_512:     "sha2-512",
@@ -61,7 +61,7 @@ var Codes = map[int]string{
 }
 
 // DefaultLengths maps a hash code to it's default length
-var DefaultLengths = map[int]int{
+var DefaultLengths = map[uint64]uint64{
 	SHA1:         20,
 	SHA2_256:     32,
 	SHA2_512:     64,
@@ -71,8 +71,20 @@ var DefaultLengths = map[int]int{
 	DBL_SHA2_256: 32,
 }
 
+func uvarint(buf []byte) (uint64, []byte, error) {
+	n, c := binary.Uvarint(buf)
+
+	if c == 0 {
+		return n, buf, errors.New("uvarint: buffer too small")
+	} else if c < 0 {
+		return n, buf[-c:], errors.New("uvarint: varint too big (max 64bit)")
+	} else {
+		return n, buf[c:], nil
+	}
+}
+
 type DecodedMultihash struct {
-	Code   int
+	Code   uint64
 	Name   string
 	Length int
 	Digest []byte
@@ -139,15 +151,24 @@ func Decode(buf []byte) (*DecodedMultihash, error) {
 		return nil, ErrTooShort
 	}
 
-	if len(buf) > 129 {
-		return nil, ErrTooLong
+	var err error
+	var code, length uint64
+
+	code, buf, err = uvarint(buf)
+	if err != nil {
+		return nil, err
+	}
+
+	length, buf, err = uvarint(buf)
+	if err != nil {
+		return nil, err
 	}
 
 	dm := &DecodedMultihash{
-		Code:   int(uint8(buf[0])),
-		Name:   Codes[int(uint8(buf[0]))],
-		Length: int(uint8(buf[1])),
-		Digest: buf[2:],
+		Code:   code,
+		Name:   Codes[code],
+		Length: length,
+		Digest: buf,
 	}
 
 	if len(dm.Digest) != dm.Length {
@@ -165,10 +186,6 @@ func Encode(buf []byte, code int) ([]byte, error) {
 		return nil, ErrUnknownCode
 	}
 
-	if len(buf) > 127 {
-		return nil, ErrLenNotSupported
-	}
-
 	pre := make([]byte, 2)
 	pre[0] = byte(uint8(code))
 	pre[1] = byte(uint8(len(buf)))
@@ -180,7 +197,7 @@ func EncodeName(buf []byte, name string) ([]byte, error) {
 }
 
 // ValidCode checks whether a multihash code is valid.
-func ValidCode(code int) bool {
+func ValidCode(code uint64) bool {
 	if AppCode(code) {
 		return true
 	}
