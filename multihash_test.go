@@ -2,6 +2,7 @@ package multihash
 
 import (
 	"bytes"
+	"encoding/binary"
 	"encoding/hex"
 	"fmt"
 	"testing"
@@ -28,6 +29,7 @@ var testCases = []TestCase{
 	TestCase{"0beec7b5", 0x11, "sha1"},
 	TestCase{"2c26b46b68ffc68ff99b453c1d30413413422d706483bfa0f98a5e886266e7ae", 0x12, "sha2-256"},
 	TestCase{"2c26b46b", 0x12, "sha2-256"},
+	TestCase{"2c26b46b68ffc68ff99b453c1d30413413", 0xb240, "blake2b-512"},
 }
 
 func (tc TestCase) Multihash() (Multihash, error) {
@@ -36,11 +38,14 @@ func (tc TestCase) Multihash() (Multihash, error) {
 		return nil, err
 	}
 
-	b := make([]byte, 2+len(ob))
-	b[0] = byte(uint8(tc.code))
-	b[1] = byte(uint8(len(ob)))
-	copy(b[2:], ob)
-	return Cast(b)
+	pre := make([]byte, 2*binary.MaxVarintLen64)
+	spot := pre
+	n := binary.PutUvarint(spot, tc.code)
+	spot = pre[n:]
+	n += binary.PutUvarint(spot, uint64(len(ob)))
+
+	nb := append(pre[:n], ob...)
+	return Cast(nb)
 }
 
 func TestEncode(t *testing.T) {
@@ -51,10 +56,13 @@ func TestEncode(t *testing.T) {
 			continue
 		}
 
-		pre := make([]byte, 2)
-		pre[0] = byte(uint8(tc.code))
-		pre[1] = byte(uint8(len(ob)))
-		nb := append(pre, ob...)
+		pre := make([]byte, 2*binary.MaxVarintLen64)
+		spot := pre
+		n := binary.PutUvarint(spot, tc.code)
+		spot = pre[n:]
+		n += binary.PutUvarint(spot, uint64(len(ob)))
+
+		nb := append(pre[:n], ob...)
 
 		encC, err := Encode(ob, tc.code)
 		if err != nil {
@@ -64,6 +72,7 @@ func TestEncode(t *testing.T) {
 
 		if !bytes.Equal(encC, nb) {
 			t.Error("encoded byte mismatch: ", encC, nb)
+			t.Error(hex.Dump(nb))
 		}
 
 		encN, err := EncodeName(ob, tc.name)
@@ -104,11 +113,13 @@ func TestDecode(t *testing.T) {
 			t.Error(err)
 			continue
 		}
+		pre := make([]byte, 2*binary.MaxVarintLen64)
+		spot := pre
+		n := binary.PutUvarint(spot, tc.code)
+		spot = pre[n:]
+		n += binary.PutUvarint(spot, uint64(len(ob)))
 
-		pre := make([]byte, 2)
-		pre[0] = byte(uint8(tc.code))
-		pre[1] = byte(uint8(len(ob)))
-		nb := append(pre, ob...)
+		nb := append(pre[:n], ob...)
 
 		dec, err := Decode(nb)
 		if err != nil {
@@ -185,10 +196,13 @@ func TestCast(t *testing.T) {
 			continue
 		}
 
-		pre := make([]byte, 2)
-		pre[0] = byte(uint8(tc.code))
-		pre[1] = byte(uint8(len(ob)))
-		nb := append(pre, ob...)
+		pre := make([]byte, 2*binary.MaxVarintLen64)
+		spot := pre
+		n := binary.PutUvarint(spot, tc.code)
+		spot = pre[n:]
+		n += binary.PutUvarint(spot, uint64(len(ob)))
+
+		nb := append(pre[:n], ob...)
 
 		if _, err := Cast(nb); err != nil {
 			t.Error(err)
@@ -210,10 +224,13 @@ func TestHex(t *testing.T) {
 			continue
 		}
 
-		pre := make([]byte, 2)
-		pre[0] = byte(uint8(tc.code))
-		pre[1] = byte(uint8(len(ob)))
-		nb := append(pre, ob...)
+		pre := make([]byte, 2*binary.MaxVarintLen64)
+		spot := pre
+		n := binary.PutUvarint(spot, tc.code)
+		spot = pre[n:]
+		n += binary.PutUvarint(spot, uint64(len(ob)))
+
+		nb := append(pre[:n], ob...)
 
 		hs := hex.EncodeToString(nb)
 		mh, err := FromHexString(hs)

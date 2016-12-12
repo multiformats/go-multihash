@@ -50,7 +50,7 @@ func init() {
 		name := fmt.Sprintf("blake2b-%d", n*8)
 		Names[name] = c
 		Codes[c] = name
-		DefaultLengths[c] = n
+		DefaultLengths[c] = int(n)
 	}
 
 	// Add blake2s (32 codes)
@@ -59,7 +59,7 @@ func init() {
 		name := fmt.Sprintf("blake2s-%d", n*8)
 		Names[name] = c
 		Codes[c] = name
-		DefaultLengths[c] = n
+		DefaultLengths[c] = int(n)
 	}
 }
 
@@ -209,10 +209,13 @@ func Encode(buf []byte, code uint64) ([]byte, error) {
 		return nil, ErrUnknownCode
 	}
 
-	pre := make([]byte, 2)
-	pre[0] = byte(uint8(code))
-	pre[1] = byte(uint8(len(buf)))
-	return append(pre, buf...), nil
+	start := make([]byte, 2*binary.MaxVarintLen64)
+	spot := start
+	n := binary.PutUvarint(spot, code)
+	spot = start[n:]
+	n += binary.PutUvarint(spot, uint64(len(buf)))
+
+	return append(start[:n], buf...), nil
 }
 
 func EncodeName(buf []byte, name string) ([]byte, error) {
