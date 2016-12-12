@@ -17,6 +17,9 @@ var (
 	ErrTooLong          = errors.New("multihash too long. must be < 129 bytes")
 	ErrLenNotSupported  = errors.New("multihash does not yet support digests longer than 127 bytes")
 	ErrInvalidMultihash = errors.New("input isn't valid multihash")
+
+	ErrVarintBufferShort = errors.New("uvarint: buffer too small")
+	ErrVarintTooLong     = errors.New("uvarint: varint too big (max 64bit)")
 )
 
 // ErrInconsistentLen is returned when a decoded multihash has an inconsistent length
@@ -94,9 +97,9 @@ func uvarint(buf []byte) (uint64, []byte, error) {
 	n, c := binary.Uvarint(buf)
 
 	if c == 0 {
-		return n, buf, errors.New("uvarint: buffer too small")
+		return n, buf, ErrVarintBufferShort
 	} else if c < 0 {
-		return n, buf[-c:], errors.New("uvarint: varint too big (max 64bit)")
+		return n, buf[-c:], ErrVarintTooLong
 	} else {
 		return n, buf[c:], nil
 	}

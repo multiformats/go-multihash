@@ -257,6 +257,17 @@ func TestDecodeErrorInvalid(t *testing.T) {
 	}
 }
 
+func TestBadVarint(t *testing.T) {
+	_, err := Cast([]byte{129, 128, 128, 128, 128, 128, 128, 128, 128, 128, 129, 1})
+	if err != ErrVarintTooLong {
+		t.Error("expected error from varint longer than 64bits, got: ", err)
+	}
+	_, err = Cast([]byte{128, 128, 128})
+	if err != ErrVarintBufferShort {
+		t.Error("expected error from cut-off varint, got: ", err)
+	}
+}
+
 func BenchmarkEncode(b *testing.B) {
 	tc := testCases[0]
 	ob, err := hex.DecodeString(tc.hex)
