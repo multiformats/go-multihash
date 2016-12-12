@@ -12,7 +12,7 @@ import (
 
 var ErrSumNotSupported = errors.New("Function not implemented. Complain to lib maintainer.")
 
-func Sum(data []byte, code int, length int) (Multihash, error) {
+func Sum(data []byte, code uint64, length int) (Multihash, error) {
 	m := Multihash{}
 	err := error(nil)
 	if !ValidCode(code) {

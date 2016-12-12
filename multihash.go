@@ -1,9 +1,11 @@
 package multihash
 
 import (
+	"encoding/binary"
 	"encoding/hex"
 	"errors"
 	"fmt"
+	"math"
 
 	b58 "github.com/jbenet/go-base58"
 )
@@ -61,7 +63,7 @@ var Codes = map[uint64]string{
 }
 
 // DefaultLengths maps a hash code to it's default length
-var DefaultLengths = map[uint64]uint64{
+var DefaultLengths = map[uint64]int{
 	SHA1:         20,
 	SHA2_256:     32,
 	SHA2_512:     64,
@@ -86,7 +88,7 @@ func uvarint(buf []byte) (uint64, []byte, error) {
 type DecodedMultihash struct {
 	Code   uint64
 	Name   string
-	Length int
+	Length int // Length is just int as it is type of len() opearator
 	Digest []byte
 }
 
@@ -164,10 +166,14 @@ func Decode(buf []byte) (*DecodedMultihash, error) {
 		return nil, err
 	}
 
+	if length > math.MaxInt32 {
+		return nil, errors.New("digest too long, supporting only <= 2^31-1")
+	}
+
 	dm := &DecodedMultihash{
 		Code:   code,
 		Name:   Codes[code],
-		Length: length,
+		Length: int(length),
 		Digest: buf,
 	}
 
@@ -180,7 +186,7 @@ func Decode(buf []byte) (*DecodedMultihash, error) {
 
 // Encode a hash digest along with the specified function code.
 // Note: the length is derived from the length of the digest itself.
-func Encode(buf []byte, code int) ([]byte, error) {
+func Encode(buf []byte, code uint64) ([]byte, error) {
 
 	if !ValidCode(code) {
 		return nil, ErrUnknownCode
@@ -210,6 +216,6 @@ func ValidCode(code uint64) bool {
 }
 
 // AppCode checks whether a multihash code is part of the App range.
-func AppCode(code int) bool {
+func AppCode(code uint64) bool {
 	return code >= 0 && code < 0x10
 }

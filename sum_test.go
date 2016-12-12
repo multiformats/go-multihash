@@ -6,7 +6,7 @@ import (
 )
 
 type SumTestCase struct {
-	code   int
+	code   uint64
 	length int
 	input  string
 	hex    string

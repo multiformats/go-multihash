@@ -9,7 +9,7 @@ import (
 
 // maybe silly, but makes it so changing
 // the table accidentally has to happen twice.
-var tCodes = map[int]string{
+var tCodes = map[uint64]string{
 	0x11: "sha1",
 	0x12: "sha2-256",
 	0x13: "sha2-512",
@@ -21,7 +21,7 @@ var tCodes = map[int]string{
 
 type TestCase struct {
 	hex  string
-	code int
+	code uint64
 	name string
 }
 
@@ -161,7 +161,7 @@ func ExampleDecode() {
 }
 
 func TestValidCode(t *testing.T) {
-	for i := 0; i < 0xff; i++ {
+	for i := uint64(0); i < 0xff; i++ {
 		_, ok := tCodes[i]
 		b := AppCode(i) || ok
 
@@ -172,7 +172,7 @@ func TestValidCode(t *testing.T) {
 }
 
 func TestAppCode(t *testing.T) {
-	for i := 0; i < 0xff; i++ {
+	for i := uint64(0); i < 0xff; i++ {
 		b := i >= 0 && i < 0x10
 		if AppCode(i) != b {
 			t.Error("AppCode incorrect for: ", i)
