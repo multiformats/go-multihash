@@ -9,7 +9,7 @@
   "gxDependencies": [
     {
       "author": "whyrusleeping",
-      "hash": "Qme1boxspcQWR8FBzMxeppqug2fYgYc15diNWmqgDVnvn2",
+      "hash": "QmaPHkZLbQQbvcyavn8q1GFHg6o6yeceyHFSJ3Pjf3p3TQ",
       "name": "go-crypto",
       "version": "0.0.0"
     },
@@ -24,6 +24,6 @@
   "language": "go",
   "license": "MIT",
   "name": "go-multihash",
-  "version": "1.0.0"
+  "version": "1.0.1"
 }
 

@@ -1,9 +1,11 @@
 package multihash
 
 import (
+	"encoding/binary"
 	"encoding/hex"
 	"errors"
 	"fmt"
+	"math"
 
 	b58 "github.com/jbenet/go-base58"
 )
@@ -15,6 +17,9 @@ var (
 	ErrTooLong          = errors.New("multihash too long. must be < 129 bytes")
 	ErrLenNotSupported  = errors.New("multihash does not yet support digests longer than 127 bytes")
 	ErrInvalidMultihash = errors.New("input isn't valid multihash")
+
+	ErrVarintBufferShort = errors.New("uvarint: buffer too small")
+	ErrVarintTooLong     = errors.New("uvarint: varint too big (max 64bit)")
 )
 
 // ErrInconsistentLen is returned when a decoded multihash has an inconsistent length
@@ -32,49 +37,78 @@ const (
 	SHA2_256 = 0x12
 	SHA2_512 = 0x13
 	SHA3     = 0x14
-	BLAKE2B  = 0x40
-	BLAKE2S  = 0x41
+
+	BLAKE2B_MIN = 0xb201
+	BLAKE2B_MAX = 0xb240
+	BLAKE2S_MIN = 0xb241
+	BLAKE2S_MAX = 0xb260
 
 	DBL_SHA2_256 = 0x56
 )
 
+func init() {
+	// Add blake2b (64 codes)
+	for c := uint64(BLAKE2B_MIN); c <= BLAKE2B_MAX; c++ {
+		n := c - BLAKE2B_MIN + 1
+		name := fmt.Sprintf("blake2b-%d", n*8)
+		Names[name] = c
+		Codes[c] = name
+		DefaultLengths[c] = int(n)
+	}
+
+	// Add blake2s (32 codes)
+	for c := uint64(BLAKE2S_MIN); c <= BLAKE2S_MAX; c++ {
+		n := c - BLAKE2S_MIN + 1
+		name := fmt.Sprintf("blake2s-%d", n*8)
+		Names[name] = c
+		Codes[c] = name
+		DefaultLengths[c] = int(n)
+	}
+}
+
 // Names maps the name of a hash to the code
-var Names = map[string]int{
+var Names = map[string]uint64{
 	"sha1":         SHA1,
 	"sha2-256":     SHA2_256,
 	"sha2-512":     SHA2_512,
 	"sha3":         SHA3,
-	"blake2b":      BLAKE2B,
-	"blake2s":      BLAKE2S,
 	"dbl-sha2-256": DBL_SHA2_256,
 }
 
 // Codes maps a hash code to it's name
-var Codes = map[int]string{
+var Codes = map[uint64]string{
 	SHA1:         "sha1",
 	SHA2_256:     "sha2-256",
 	SHA2_512:     "sha2-512",
 	SHA3:         "sha3",
-	BLAKE2B:      "blake2b",
-	BLAKE2S:      "blake2s",
 	DBL_SHA2_256: "dbl-sha2-256",
 }
 
 // DefaultLengths maps a hash code to it's default length
-var DefaultLengths = map[int]int{
+var DefaultLengths = map[uint64]int{
 	SHA1:         20,
 	SHA2_256:     32,
 	SHA2_512:     64,
 	SHA3:         64,
-	BLAKE2B:      64,
-	BLAKE2S:      32,
 	DBL_SHA2_256: 32,
 }
 
+func uvarint(buf []byte) (uint64, []byte, error) {
+	n, c := binary.Uvarint(buf)
+
+	if c == 0 {
+		return n, buf, ErrVarintBufferShort
+	} else if c < 0 {
+		return n, buf[-c:], ErrVarintTooLong
+	} else {
+		return n, buf[c:], nil
+	}
+}
+
 type DecodedMultihash struct {
-	Code   int
+	Code   uint64
 	Name   string
-	Length int
+	Length int // Length is just int as it is type of len() opearator
 	Digest []byte
 }
 
@@ -139,15 +173,28 @@ func Decode(buf []byte) (*DecodedMultihash, error) {
 		return nil, ErrTooShort
 	}
 
-	if len(buf) > 129 {
-		return nil, ErrTooLong
+	var err error
+	var code, length uint64
+
+	code, buf, err = uvarint(buf)
+	if err != nil {
+		return nil, err
+	}
+
+	length, buf, err = uvarint(buf)
+	if err != nil {
+		return nil, err
+	}
+
+	if length > math.MaxInt32 {
+		return nil, errors.New("digest too long, supporting only <= 2^31-1")
 	}
 
 	dm := &DecodedMultihash{
-		Code:   int(uint8(buf[0])),
-		Name:   Codes[int(uint8(buf[0]))],
-		Length: int(uint8(buf[1])),
-		Digest: buf[2:],
+		Code:   code,
+		Name:   Codes[code],
+		Length: int(length),
+		Digest: buf,
 	}
 
 	if len(dm.Digest) != dm.Length {
@@ -159,20 +206,19 @@ func Decode(buf []byte) (*DecodedMultihash, error) {
 
 // Encode a hash digest along with the specified function code.
 // Note: the length is derived from the length of the digest itself.
-func Encode(buf []byte, code int) ([]byte, error) {
+func Encode(buf []byte, code uint64) ([]byte, error) {
 
 	if !ValidCode(code) {
 		return nil, ErrUnknownCode
 	}
 
-	if len(buf) > 127 {
-		return nil, ErrLenNotSupported
-	}
+	start := make([]byte, 2*binary.MaxVarintLen64)
+	spot := start
+	n := binary.PutUvarint(spot, code)
+	spot = start[n:]
+	n += binary.PutUvarint(spot, uint64(len(buf)))
 
-	pre := make([]byte, 2)
-	pre[0] = byte(uint8(code))
-	pre[1] = byte(uint8(len(buf)))
-	return append(pre, buf...), nil
+	return append(start[:n], buf...), nil
 }
 
 func EncodeName(buf []byte, name string) ([]byte, error) {
@@ -180,7 +226,7 @@ func EncodeName(buf []byte, name string) ([]byte, error) {
 }
 
 // ValidCode checks whether a multihash code is valid.
-func ValidCode(code int) bool {
+func ValidCode(code uint64) bool {
 	if AppCode(code) {
 		return true
 	}
@@ -193,6 +239,6 @@ func ValidCode(code int) bool {
 }
 
 // AppCode checks whether a multihash code is part of the App range.
-func AppCode(code int) bool {
+func AppCode(code uint64) bool {
 	return code >= 0 && code < 0x10
 }

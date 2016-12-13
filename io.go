@@ -1,8 +1,10 @@
 package multihash
 
 import (
-	"fmt"
+	"encoding/binary"
+	"errors"
 	"io"
+	"math"
 )
 
 // Reader is an io.Reader wrapper that exposes a function
@@ -39,26 +41,42 @@ func (r *mhReader) Read(buf []byte) (n int, err error) {
 	return r.r.Read(buf)
 }
 
+func (r *mhReader) ReadByte() (byte, error) {
+	if br, ok := r.r.(io.ByteReader); ok {
+		return br.ReadByte()
+	}
+	b := make([]byte, 1)
+	_, err := r.r.Read(b)
+	if err != nil {
+		return 0, err
+	}
+	return b[0], nil
+}
+
 func (r *mhReader) ReadMultihash() (Multihash, error) {
-	mhhdr := make([]byte, 2)
-	if _, err := io.ReadFull(r.r, mhhdr); err != nil {
+	code, err := binary.ReadUvarint(r)
+	if err != nil {
 		return nil, err
 	}
 
-	// first byte is the algo, the second is the length.
-
-	// (varints someday...)
-	length := uint(mhhdr[1])
-
-	if length > 127 {
-		return nil, fmt.Errorf("varints not yet supported (length is %d)", length)
+	length, err := binary.ReadUvarint(r)
+	if err != nil {
+		return nil, err
+	}
+	if length > math.MaxInt32 {
+		return nil, errors.New("digest too long, supporting only <= 2^31-1")
 	}
 
-	buf := make([]byte, length+2)
-	buf[0] = mhhdr[0]
-	buf[1] = mhhdr[1]
+	pre := make([]byte, 2*binary.MaxVarintLen64)
+	spot := pre
+	n := binary.PutUvarint(spot, code)
+	spot = pre[n:]
+	n += binary.PutUvarint(spot, length)
 
-	if _, err := io.ReadFull(r.r, buf[2:]); err != nil {
+	buf := make([]byte, int(length)+n)
+	copy(buf, pre[:n])
+
+	if _, err := io.ReadFull(r.r, buf[n:]); err != nil {
 		return nil, err
 	}
 

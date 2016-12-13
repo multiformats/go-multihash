@@ -23,7 +23,7 @@ var (
 type Options struct {
 	Encoding      string
 	Algorithm     string
-	AlgorithmCode int
+	AlgorithmCode uint64
 	Length        int
 
 	fs *flag.FlagSet
