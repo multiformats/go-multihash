@@ -18,6 +18,12 @@
       "hash": "QmT8rehPR3F6bmwL6zjUN8XpiDBFFpMP2myPdC6ApsWfJf",
       "name": "go-base58",
       "version": "0.0.0"
+    },
+    {
+      "author": "whyrusleeping",
+      "hash": "QmdKCKycEwt8S5vZM5LQ96a3hCLQ5WF98z21wJFBBX8pJe",
+      "name": "keccak",
+      "version": "0.0.0"
     }
   ],
   "gxVersion": "0.9.0",
