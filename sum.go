@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 
+	keccak "github.com/ethereum/go-ethereum/crypto/sha3"
 	blake2b "golang.org/x/crypto/blake2b"
 	blake2s "golang.org/x/crypto/blake2s"
 	sha3 "golang.org/x/crypto/sha3"
@@ -63,6 +64,8 @@ func Sum(data []byte, code uint64, length int) (Multihash, error) {
 			d = sumSHA256(data)
 		case SHA2_512:
 			d = sumSHA512(data)
+		case KECCAK_256:
+			d = sumKeccak256(data)
 		case SHA3:
 			d, err = sumSHA3(data)
 		case DBL_SHA2_256:
@@ -97,6 +100,12 @@ func sumSHA256(data []byte) []byte {
 func sumSHA512(data []byte) []byte {
 	a := sha512.Sum512(data)
 	return a[0:64]
+}
+
+func sumKeccak256(data []byte) []byte {
+	h := keccak.NewKeccak256()
+	h.Write(data)
+	return h.Sum(nil)
 }
 
 func sumSHA3(data []byte) ([]byte, error) {
