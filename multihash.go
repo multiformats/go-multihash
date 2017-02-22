@@ -33,10 +33,14 @@ func (e ErrInconsistentLen) Error() string {
 
 // constants
 const (
-	SHA1     = 0x11
-	SHA2_256 = 0x12
-	SHA2_512 = 0x13
-	SHA3     = 0x14
+	SHA1       = 0x11
+	SHA2_256   = 0x12
+	SHA2_512   = 0x13
+	SHA3       = 0x14
+	KECCAK_224 = 0x1A
+	KECCAK_256 = 0x1B
+	KECCAK_384 = 0x1C
+	KECCAK_512 = 0x1D
 
 	BLAKE2B_MIN = 0xb201
 	BLAKE2B_MAX = 0xb240
@@ -73,6 +77,7 @@ var Names = map[string]uint64{
 	"sha2-512":     SHA2_512,
 	"sha3":         SHA3,
 	"dbl-sha2-256": DBL_SHA2_256,
+	"keccak-256":   KECCAK_256,
 }
 
 // Codes maps a hash code to it's name
@@ -82,6 +87,7 @@ var Codes = map[uint64]string{
 	SHA2_512:     "sha2-512",
 	SHA3:         "sha3",
 	DBL_SHA2_256: "dbl-sha2-256",
+	KECCAK_256:   "keccak-256",
 }
 
 // DefaultLengths maps a hash code to it's default length
@@ -91,6 +97,7 @@ var DefaultLengths = map[uint64]int{
 	SHA2_512:     64,
 	SHA3:         64,
 	DBL_SHA2_256: 32,
+	KECCAK_256:   32,
 }
 
 func uvarint(buf []byte) (uint64, []byte, error) {
