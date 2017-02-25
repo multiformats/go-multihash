@@ -111,21 +111,6 @@ func sumSHA3(data []byte) ([]byte, error) {
 }
 
 func sumMURMUR3(data []byte) ([]byte, error) {
-	/*h := murmur3.New32()
-	if _, err := h.Write(data); err != nil {
-		return nil, err
-	}
-	return h.Sum(nil), nil*/
-	/*
-	   const bytes = new Array(4)
-
-	   for (let i = 0; i < 4; i++) {
-	   bytes[i] = number & 0xff
-	   number = number >>> 8
-	   }
-
-	   let buf = new Buffer(bytes)
-	*/
 	number := murmur3.Sum32(data)
 	bytes := make([]byte, 4)
 	for i := range bytes {
