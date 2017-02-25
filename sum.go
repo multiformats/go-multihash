@@ -7,11 +7,8 @@ import (
 	"errors"
 	"fmt"
 
-<<<<<<< HEAD
-	"github.com/spaolacci/murmur3"
-=======
 	keccak "github.com/ethereum/go-ethereum/crypto/sha3"
->>>>>>> d2cd43ebf4ca5ceb0718184db925bd29bb0de2d2
+	"github.com/spaolacci/murmur3"
 	blake2b "golang.org/x/crypto/blake2b"
 	blake2s "golang.org/x/crypto/blake2s"
 	sha3 "golang.org/x/crypto/sha3"
