@@ -16,6 +16,10 @@ var tCodes = map[uint64]string{
 	0x13: "sha2-512",
 	0x14: "sha3",
 	0x56: "dbl-sha2-256",
+	0x1A: "keccak-224",
+	0x1B: "keccak-256",
+	0x1C: "keccak-384",
+	0x1D: "keccak-512",
 }
 
 type TestCase struct {
@@ -30,6 +34,10 @@ var testCases = []TestCase{
 	TestCase{"2c26b46b68ffc68ff99b453c1d30413413422d706483bfa0f98a5e886266e7ae", 0x12, "sha2-256"},
 	TestCase{"2c26b46b", 0x12, "sha2-256"},
 	TestCase{"2c26b46b68ffc68ff99b453c1d30413413", 0xb240, "blake2b-512"},
+	TestCase{"2bd72cde2f75e523512999eb7639f17b699efe29bec342f5a0270896", 0x1A, "keccak-224"},
+	TestCase{"ee6f6b4ce5d754c01203cb3b99294b88615df5999e20d6fe509204fa254a0f97", 0x1B, "keccak-256"},
+	TestCase{"0e2fcca40e861fc425a2503a65f4a4befab7be7f193e57654ca3713e85262b035e54d5ade93f9632b810ab88b04f7d84", 0x1C, "keccak-384"},
+	TestCase{"e161c54798f78eba3404ac5e7e12d27555b7b810e7fd0db3f25ffa0c785c438331b0fbb6156215f69edf403c642e5280f4521da9bd767296ec81f05100852e78", 0x1D, "keccak-512"},
 }
 
 func (tc TestCase) Multihash() (Multihash, error) {
