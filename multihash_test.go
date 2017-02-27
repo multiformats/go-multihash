@@ -16,7 +16,10 @@ var tCodes = map[uint64]string{
 	0x13: "sha2-512",
 	0x14: "sha3",
 	0x56: "dbl-sha2-256",
+	0x1A: "keccak-224",
 	0x1B: "keccak-256",
+	0x1C: "keccak-384",
+	0x1D: "keccak-512",
 }
 
 type TestCase struct {
