@@ -80,7 +80,10 @@ var Names = map[string]uint64{
 	"sha3":         SHA3,
 	"dbl-sha2-256": DBL_SHA2_256,
 	"murmur3":      MURMUR3,
+	"keccak-224":   KECCAK_224,
 	"keccak-256":   KECCAK_256,
+	"keccak-384":   KECCAK_384,
+	"keccak-512":   KECCAK_512,
 }
 
 // Codes maps a hash code to it's name
@@ -91,7 +94,10 @@ var Codes = map[uint64]string{
 	SHA3:         "sha3",
 	DBL_SHA2_256: "dbl-sha2-256",
 	MURMUR3:      "murmur3",
+	KECCAK_224:   "keccak-224",
 	KECCAK_256:   "keccak-256",
+	KECCAK_384:   "keccak-384",
+	KECCAK_512:   "keccak-512",
 }
 
 // DefaultLengths maps a hash code to it's default length
@@ -101,8 +107,11 @@ var DefaultLengths = map[uint64]int{
 	SHA2_512:     64,
 	SHA3:         64,
 	DBL_SHA2_256: 32,
+	KECCAK_224:   28,
 	KECCAK_256:   32,
 	MURMUR3:      4,
+	KECCAK_384:   48,
+	KECCAK_512:   64,
 }
 
 func uvarint(buf []byte) (uint64, []byte, error) {
