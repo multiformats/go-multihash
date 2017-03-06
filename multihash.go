@@ -48,6 +48,8 @@ const (
 	BLAKE2S_MAX = 0xb260
 
 	DBL_SHA2_256 = 0x56
+
+	MURMUR3 = 0x22
 )
 
 func init() {
@@ -77,6 +79,7 @@ var Names = map[string]uint64{
 	"sha2-512":     SHA2_512,
 	"sha3":         SHA3,
 	"dbl-sha2-256": DBL_SHA2_256,
+	"murmur3":      MURMUR3,
 	"keccak-256":   KECCAK_256,
 }
 
@@ -87,6 +90,7 @@ var Codes = map[uint64]string{
 	SHA2_512:     "sha2-512",
 	SHA3:         "sha3",
 	DBL_SHA2_256: "dbl-sha2-256",
+	MURMUR3:      "murmur3",
 	KECCAK_256:   "keccak-256",
 }
 
@@ -98,6 +102,7 @@ var DefaultLengths = map[uint64]int{
 	SHA3:         64,
 	DBL_SHA2_256: 32,
 	KECCAK_256:   32,
+	MURMUR3:      4,
 }
 
 func uvarint(buf []byte) (uint64, []byte, error) {

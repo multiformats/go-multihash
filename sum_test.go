@@ -27,6 +27,7 @@ var sumTestCases = []SumTestCase{
 	SumTestCase{BLAKE2B_MAX - 32, 32, "foo", "a0e40220b8fe9f7f6255a6fa08f668ab632a8d081ad87983c77cd274e48ce450f0b349fd"},
 	SumTestCase{BLAKE2B_MAX - 16, 32, "foo", "b0e40220e629ee880953d32c8877e479e3b4cb0a4c9d5805e2b34c675b5a5863c4ad7d64"},
 	SumTestCase{BLAKE2S_MAX, 32, "foo", "e0e4022008d6cad88075de8f192db097573d0e829411cd91eb6ec65e8fc16c017edfdb74"},
+	SumTestCase{MURMUR3, 4, "beep boop", "2204243ddb9e"},
 	SumTestCase{KECCAK_256, 32, "foo", "1b2041b1a0649752af1b28b3dc29a1556eee781e4a4c3a1f7f53f90fa834de098c4d"},
 }
 
