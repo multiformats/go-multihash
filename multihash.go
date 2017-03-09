@@ -45,6 +45,9 @@ const (
 	KECCAK_384 = 0x1C
 	KECCAK_512 = 0x1D
 
+	SHAKE_128 = 0x18
+	SHAKE_256 = 0x19
+
 	BLAKE2B_MIN = 0xb201
 	BLAKE2B_MAX = 0xb240
 	BLAKE2S_MIN = 0xb241
@@ -87,6 +90,8 @@ var Names = map[string]uint64{
 	"keccak-256":   KECCAK_256,
 	"keccak-384":   KECCAK_384,
 	"keccak-512":   KECCAK_512,
+	"shake-128":    SHAKE_128,
+	"shake-256":    SHAKE_256,
 }
 
 // Codes maps a hash code to it's name
@@ -101,6 +106,8 @@ var Codes = map[uint64]string{
 	KECCAK_256:   "keccak-256",
 	KECCAK_384:   "keccak-384",
 	KECCAK_512:   "keccak-512",
+	SHAKE_128:    "shake-128",
+	SHAKE_256:    "shake-256",
 }
 
 // DefaultLengths maps a hash code to it's default length
@@ -115,6 +122,8 @@ var DefaultLengths = map[uint64]int{
 	MURMUR3:      4,
 	KECCAK_384:   48,
 	KECCAK_512:   64,
+	SHAKE_128:    32,
+	SHAKE_256:    64,
 }
 
 func uvarint(buf []byte) (uint64, []byte, error) {
