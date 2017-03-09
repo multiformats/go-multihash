@@ -7,11 +7,11 @@ import (
 	"errors"
 	"fmt"
 
-	keccak "github.com/ethereum/go-ethereum/crypto/sha3"
 	"github.com/spaolacci/murmur3"
 	blake2b "golang.org/x/crypto/blake2b"
 	blake2s "golang.org/x/crypto/blake2s"
 	sha3 "golang.org/x/crypto/sha3"
+	keccak "leb.io/hashland/keccakpg"
 )
 
 var ErrSumNotSupported = errors.New("Function not implemented. Complain to lib maintainer.")
@@ -65,8 +65,14 @@ func Sum(data []byte, code uint64, length int) (Multihash, error) {
 			d = sumSHA256(data)
 		case SHA2_512:
 			d = sumSHA512(data)
+		case KECCAK_224:
+			d = sumKeccak224(data)
 		case KECCAK_256:
 			d = sumKeccak256(data)
+		case KECCAK_384:
+			d = sumKeccak384(data)
+		case KECCAK_512:
+			d = sumKeccak512(data)
 		case SHA3:
 			d, err = sumSHA3(data)
 		case DBL_SHA2_256:
@@ -105,8 +111,26 @@ func sumSHA512(data []byte) []byte {
 	return a[0:64]
 }
 
+func sumKeccak224(data []byte) []byte {
+	h := keccak.New224()
+	h.Write(data)
+	return h.Sum(nil)
+}
+
 func sumKeccak256(data []byte) []byte {
-	h := keccak.NewKeccak256()
+	h := keccak.New256()
+	h.Write(data)
+	return h.Sum(nil)
+}
+
+func sumKeccak384(data []byte) []byte {
+	h := keccak.New384()
+	h.Write(data)
+	return h.Sum(nil)
+}
+
+func sumKeccak512(data []byte) []byte {
+	h := keccak.New512()
 	h.Write(data)
 	return h.Sum(nil)
 }
