@@ -39,7 +39,11 @@ const (
 	SHA1       = 0x11
 	SHA2_256   = 0x12
 	SHA2_512   = 0x13
-	SHA3       = 0x14
+	SHA3_224   = 0x17
+	SHA3_256   = 0x16
+	SHA3_384   = 0x15
+	SHA3_512   = 0x14
+	SHA3       = SHA3_512
 	KECCAK_224 = 0x1A
 	KECCAK_256 = 0x1B
 	KECCAK_384 = 0x1C
@@ -83,7 +87,11 @@ var Names = map[string]uint64{
 	"sha1":         SHA1,
 	"sha2-256":     SHA2_256,
 	"sha2-512":     SHA2_512,
-	"sha3":         SHA3,
+	"sha3":         SHA3_512,
+	"sha3-224":     SHA3_224,
+	"sha3-256":     SHA3_256,
+	"sha3-384":     SHA3_384,
+	"sha3-512":     SHA3_512,
 	"dbl-sha2-256": DBL_SHA2_256,
 	"murmur3":      MURMUR3,
 	"keccak-224":   KECCAK_224,
@@ -99,7 +107,10 @@ var Codes = map[uint64]string{
 	SHA1:         "sha1",
 	SHA2_256:     "sha2-256",
 	SHA2_512:     "sha2-512",
-	SHA3:         "sha3",
+	SHA3_224:     "sha3-224",
+	SHA3_256:     "sha3-256",
+	SHA3_384:     "sha3-384",
+	SHA3_512:     "sha3-512",
 	DBL_SHA2_256: "dbl-sha2-256",
 	MURMUR3:      "murmur3",
 	KECCAK_224:   "keccak-224",
@@ -115,7 +126,10 @@ var DefaultLengths = map[uint64]int{
 	SHA1:         20,
 	SHA2_256:     32,
 	SHA2_512:     64,
-	SHA3:         64,
+	SHA3_224:     28,
+	SHA3_256:     32,
+	SHA3_384:     48,
+	SHA3_512:     64,
 	DBL_SHA2_256: 32,
 	KECCAK_224:   28,
 	KECCAK_256:   32,
