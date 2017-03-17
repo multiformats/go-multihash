@@ -39,7 +39,7 @@ go get -u github.com/whyrusleeping/gx
 go get -u github.com/whyrusleeping/gx-go
 cd <your-project-repository>
 gx init
-gx import github.com/multiformats/go-multistream
+gx import github.com/multiformats/go-multihash
 gx install --global
 gx-go --rewrite
 ```
