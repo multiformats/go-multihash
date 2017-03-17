@@ -14,8 +14,12 @@ import (
 	keccak "leb.io/hashland/keccakpg"
 )
 
+// ErrSumNotSupported is returned when the Sum function code is not implemented
 var ErrSumNotSupported = errors.New("Function not implemented. Complain to lib maintainer.")
 
+// Sum obtains the cryptographic sum of a given buffer. The length parameter
+// indicates the length of the resulting digest and passing a negative value
+// use default length values for the selected hash function.
 func Sum(data []byte, code uint64, length int) (Multihash, error) {
 	m := Multihash{}
 	err := error(nil)

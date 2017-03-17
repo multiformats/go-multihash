@@ -1,3 +1,6 @@
+// Package multihash is the Go implementation of
+// https://github.com/multiformats/multihash, or self-describing
+// hashes.
 package multihash
 
 import (
@@ -126,23 +129,31 @@ func uvarint(buf []byte) (uint64, []byte, error) {
 	}
 }
 
+// DecodedMultihash represents a parsed multihash and allows
+// easy access to the different parts of a multihash.
 type DecodedMultihash struct {
 	Code   uint64
 	Name   string
-	Length int // Length is just int as it is type of len() opearator
-	Digest []byte
+	Length int    // Length is just int as it is type of len() opearator
+	Digest []byte // Digest holds the raw multihash bytes
 }
 
+// Multihash is byte slice with the following form:
+// <hash function code><digest size><hash function output>.
+// See the spec for more information.
 type Multihash []byte
 
+// HexString returns the hex-encoded representation of a multihash.
 func (m *Multihash) HexString() string {
 	return hex.EncodeToString([]byte(*m))
 }
 
+// String is an alias to HexString().
 func (m *Multihash) String() string {
 	return m.HexString()
 }
 
+// FromHexString parses a hex-encoded multihash.
 func FromHexString(s string) (Multihash, error) {
 	b, err := hex.DecodeString(s)
 	if err != nil {
@@ -152,10 +163,12 @@ func FromHexString(s string) (Multihash, error) {
 	return Cast(b)
 }
 
+// B58String returns the B58-encoded representation of a multihash.
 func (m Multihash) B58String() string {
 	return b58.Encode([]byte(m))
 }
 
+// FromB58String parses a B58-encoded multihash.
 func FromB58String(s string) (m Multihash, err error) {
 	// panic handler, in case we try accessing bytes incorrectly.
 	defer func() {
@@ -174,6 +187,8 @@ func FromB58String(s string) (m Multihash, err error) {
 	return Cast(b)
 }
 
+// Cast casts a buffer onto a multihash, and returns an error
+// if it does not work.
 func Cast(buf []byte) (Multihash, error) {
 	dm, err := Decode(buf)
 	if err != nil {
@@ -187,7 +202,7 @@ func Cast(buf []byte) (Multihash, error) {
 	return Multihash(buf), nil
 }
 
-// Decode a hash from the given Multihash.
+// Decode parses multihash bytes into a DecodedMultihash.
 func Decode(buf []byte) (*DecodedMultihash, error) {
 
 	if len(buf) < 3 {
@@ -242,6 +257,8 @@ func Encode(buf []byte, code uint64) ([]byte, error) {
 	return append(start[:n], buf...), nil
 }
 
+// EncodeName is like Encode() but providing a string name
+// instead of a numeric code. See Names for allowed values.
 func EncodeName(buf []byte, name string) ([]byte, error) {
 	return Encode(buf, Names[name])
 }
