@@ -21,8 +21,14 @@
     },
     {
       "author": "whyrusleeping",
-      "hash": "QmdKCKycEwt8S5vZM5LQ96a3hCLQ5WF98z21wJFBBX8pJe",
-      "name": "keccak",
+      "hash": "QmQPWTeQJnJE7MYu6dJTiNTQRNuqBr41dis6UgY6Uekmgd",
+      "name": "keccakpg",
+      "version": "0.0.0"
+    },
+    {
+      "author": "whyrusleeping",
+      "hash": "QmfJHywXQu98UeZtGJBQrPAR6AtmDjjbe3qjTo9piXHPnx",
+      "name": "murmur3",
       "version": "0.0.0"
     }
   ],
