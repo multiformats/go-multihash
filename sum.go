@@ -83,6 +83,10 @@ func Sum(data []byte, code uint64, length int) (Multihash, error) {
 			d = sumSHA256(sumSHA256(data))
 		case MURMUR3:
 			d, err = sumMURMUR3(data)
+		case SHAKE_128:
+			d = sumSHAKE128(data)
+		case SHAKE_256:
+			d = sumSHAKE256(data)
 		default:
 			return m, ErrSumNotSupported
 		}
@@ -155,4 +159,16 @@ func sumMURMUR3(data []byte) ([]byte, error) {
 		number >>= 8
 	}
 	return bytes, nil
+}
+
+func sumSHAKE128(data []byte) []byte {
+	bytes := make([]byte, 32)
+	sha3.ShakeSum128(bytes, data)
+	return bytes
+}
+
+func sumSHAKE256(data []byte) []byte {
+	bytes := make([]byte, 64)
+	sha3.ShakeSum256(bytes, data)
+	return bytes
 }
