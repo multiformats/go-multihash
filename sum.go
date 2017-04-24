@@ -77,8 +77,14 @@ func Sum(data []byte, code uint64, length int) (Multihash, error) {
 			d = sumKeccak384(data)
 		case KECCAK_512:
 			d = sumKeccak512(data)
-		case SHA3:
-			d, err = sumSHA3(data)
+		case SHA3_224:
+			d = sumSHA3_224(data)
+		case SHA3_256:
+			d = sumSHA3_256(data)
+		case SHA3_384:
+			d = sumSHA3_384(data)
+		case SHA3_512:
+			d = sumSHA3_512(data)
 		case DBL_SHA2_256:
 			d = sumSHA256(sumSHA256(data))
 		case MURMUR3:
@@ -151,6 +157,11 @@ func sumSHA3(data []byte) ([]byte, error) {
 	return h.Sum(nil), nil
 }
 
+func sumSHA3_512(data []byte) []byte {
+	a := sha3.Sum512(data)
+	return a[:]
+}
+
 func sumMURMUR3(data []byte) ([]byte, error) {
 	number := murmur3.Sum32(data)
 	bytes := make([]byte, 4)
@@ -171,4 +182,19 @@ func sumSHAKE256(data []byte) []byte {
 	bytes := make([]byte, 64)
 	sha3.ShakeSum256(bytes, data)
 	return bytes
+}
+
+func sumSHA3_384(data []byte) []byte {
+	a := sha3.Sum384(data)
+	return a[:]
+}
+
+func sumSHA3_256(data []byte) []byte {
+	a := sha3.Sum256(data)
+	return a[:]
+}
+
+func sumSHA3_224(data []byte) []byte {
+	a := sha3.Sum224(data)
+	return a[:]
 }
