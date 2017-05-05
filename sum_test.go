@@ -14,6 +14,7 @@ type SumTestCase struct {
 }
 
 var sumTestCases = []SumTestCase{
+	SumTestCase{ID, 3, "foo", "0003666f6f"},
 	SumTestCase{SHA1, -1, "foo", "11140beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33"},
 	SumTestCase{SHA1, 10, "foo", "110a0beec7b5ea3f0fdbc95d"},
 	SumTestCase{SHA2_256, -1, "foo", "12202c26b46b68ffc68ff99b453c1d30413413422d706483bfa0f98a5e886266e7ae"},
