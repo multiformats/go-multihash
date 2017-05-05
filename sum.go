@@ -63,6 +63,8 @@ func Sum(data []byte, code uint64, length int) (Multihash, error) {
 		}
 	default:
 		switch code {
+		case ID:
+			d = sumID(data)
 		case SHA1:
 			d = sumSHA1(data)
 		case SHA2_256:
@@ -108,6 +110,10 @@ func isBlake2s(code uint64) bool {
 }
 func isBlake2b(code uint64) bool {
 	return code >= BLAKE2B_MIN && code <= BLAKE2B_MAX
+}
+
+func sumID(data []byte) []byte {
+	return data
 }
 
 func sumSHA1(data []byte) []byte {

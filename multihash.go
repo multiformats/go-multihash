@@ -36,6 +36,7 @@ func (e ErrInconsistentLen) Error() string {
 
 // constants
 const (
+	ID         = 0x00
 	SHA1       = 0x11
 	SHA2_256   = 0x12
 	SHA2_512   = 0x13
@@ -84,6 +85,7 @@ func init() {
 
 // Names maps the name of a hash to the code
 var Names = map[string]uint64{
+	"id":           ID,
 	"sha1":         SHA1,
 	"sha2-256":     SHA2_256,
 	"sha2-512":     SHA2_512,
@@ -104,6 +106,7 @@ var Names = map[string]uint64{
 
 // Codes maps a hash code to it's name
 var Codes = map[uint64]string{
+	ID:           "id",
 	SHA1:         "sha1",
 	SHA2_256:     "sha2-256",
 	SHA2_512:     "sha2-512",
@@ -123,6 +126,7 @@ var Codes = map[uint64]string{
 
 // DefaultLengths maps a hash code to it's default length
 var DefaultLengths = map[uint64]int{
+	ID:           32,
 	SHA1:         20,
 	SHA2_256:     32,
 	SHA2_512:     64,

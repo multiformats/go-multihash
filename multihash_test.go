@@ -11,6 +11,7 @@ import (
 // maybe silly, but makes it so changing
 // the table accidentally has to happen twice.
 var tCodes = map[uint64]string{
+	0x00: "id",
 	0x11: "sha1",
 	0x12: "sha2-256",
 	0x13: "sha2-512",
@@ -35,6 +36,7 @@ type TestCase struct {
 }
 
 var testCases = []TestCase{
+	TestCase{"2c26b46b68ffc68ff99b453c1d30413413422d706483bfa0f98a5e886266e7ae", 0x00, "id"},
 	TestCase{"0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33", 0x11, "sha1"},
 	TestCase{"0beec7b5", 0x11, "sha1"},
 	TestCase{"2c26b46b68ffc68ff99b453c1d30413413422d706483bfa0f98a5e886266e7ae", 0x12, "sha2-256"},
