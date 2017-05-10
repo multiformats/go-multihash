@@ -58,6 +58,13 @@ const (
 	BLAKE2S_MIN = 0xb241
 	BLAKE2S_MAX = 0xb260
 
+	SKEIN256_MIN = 0xb301
+	SKEIN256_MAX = 0xb320
+	SKEIN512_MIN = 0xb321
+	SKEIN512_MAX = 0xb360
+	SKEIN1024_MIN = 0xb361
+	SKEIN1024_MAX = 0xb3e0
+
 	DBL_SHA2_256 = 0x56
 
 	MURMUR3 = 0x22
@@ -77,6 +84,30 @@ func init() {
 	for c := uint64(BLAKE2S_MIN); c <= BLAKE2S_MAX; c++ {
 		n := c - BLAKE2S_MIN + 1
 		name := fmt.Sprintf("blake2s-%d", n*8)
+		Names[name] = c
+		Codes[c] = name
+		DefaultLengths[c] = int(n)
+	}
+	// Add skein256 (32 codes)
+	for c := uint64(SKEIN256_MIN); c <= SKEIN256_MAX; c++ {
+		n := c - SKEIN256_MIN + 1
+		name := fmt.Sprintf("skein256-%d", n*8)
+		Names[name] = c
+		Codes[c] = name
+		DefaultLengths[c] = int(n)
+	}
+	// Add skein512 (64 codes)
+	for c := uint64(SKEIN512_MIN); c <= SKEIN512_MAX; c++ {
+		n := c - SKEIN512_MIN + 1
+		name := fmt.Sprintf("skein512-%d", n*8)
+		Names[name] = c
+		Codes[c] = name
+		DefaultLengths[c] = int(n)
+	}
+	// Add skein1024 (128 codes)
+	for c := uint64(SKEIN1024_MIN); c <= SKEIN1024_MAX; c++ {
+		n := c - SKEIN1024_MIN + 1
+		name := fmt.Sprintf("skein1024-%d", n*8)
 		Names[name] = c
 		Codes[c] = name
 		DefaultLengths[c] = int(n)
