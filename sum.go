@@ -45,6 +45,13 @@ func Sum(data []byte, code uint64, length int) (Multihash, error) {
 			out := blake2s.Sum256(data)
 			d = out[:]
 		default:
+			
+			// var sum [32]byte
+			// var tmp [olen]byte
+			// checkSum(&sum, olen, data)
+			// copy(tmp[:], sum[:olen])
+			// d = tmp
+			
 			return nil, fmt.Errorf("unsupported length for blake2s: %d", olen)
 		}
 	case isBlake2b(code):
@@ -60,20 +67,30 @@ func Sum(data []byte, code uint64, length int) (Multihash, error) {
 			out := blake2b.Sum512(data)
 			d = out[:]
 		default:
+			
+			// var sum [64]byte
+			// var tmp [olen]byte
+			// checkSum(&sum, olen, data)
+			// copy(tmp[:], sum[:olen])
+			// d = tmp
+			
 			return nil, fmt.Errorf("unsupported length for blake2b: %d", olen)
 		}
 	case isSkein256(code):
 		olen := code - SKEIN256_MIN + 1
 		state, err_skein := skein.New(256, int(olen))
-		d = state.Update(data).Sum()[:]
+		out = state.Sum(data)
+		d = out[:]
 	case isSkein512(code):
 		olen := code - SKEIN512_MIN + 1
 		state, err_skein := skein.New(512, int(olen))
-		d = state.Update(data).Sum()[:]
+		out = state.Sum(data)
+		d = out[:]
 	case isSkein1024(code):
 		olen := code - SKEIN1024_MIN + 1
 		state, err_skein := skein.New(1024, int(olen))
-		d = state.Update(data).Sum()[:]
+		out = state.Sum(data)
+		d = out[:]
 	default:
 		switch code {
 		case ID:
