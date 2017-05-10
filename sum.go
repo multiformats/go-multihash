@@ -64,22 +64,16 @@ func Sum(data []byte, code uint64, length int) (Multihash, error) {
 		}
 	case isSkein256(code):
 		olen := code - SKEIN256_MIN + 1
-		switch olen {
-		default:
-			return nil, fmt.Errorf("unsupported length for skein256: %d", olen)
-		}
+		state, err_skein := skein.New(256, olen)
+		d = state.Update(data).Sum()[:]
 	case isSkein512(code):
 		olen := code - SKEIN512_MIN + 1
-		switch olen {
-		default:
-			return nil, fmt.Errorf("unsupported length for skein512: %d", olen)
-		}
+		state, err_skein := skein.New(512, olen)
+		d = state.Update(data).Sum()[:]
 	case isSkein1024(code):
 		olen := code - SKEIN1024_MIN + 1
-		switch olen {
-		default:
-			return nil, fmt.Errorf("unsupported length for skein1024: %d", olen)
-		}
+		state, err_skein := skein.New(1024, olen)
+		d = state.Update(data).Sum()[:]
 	default:
 		switch code {
 		case ID:
