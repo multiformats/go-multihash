@@ -12,6 +12,7 @@ import (
 	blake2s "golang.org/x/crypto/blake2s"
 	sha3 "golang.org/x/crypto/sha3"
 	keccak "leb.io/hashland/keccakpg"
+	skein "leb.io/hashland/skein" // could use https://github.com/wernerd/Skein3Fish/tree/master/go as well
 )
 
 // ErrSumNotSupported is returned when the Sum function code is not implemented
@@ -60,6 +61,24 @@ func Sum(data []byte, code uint64, length int) (Multihash, error) {
 			d = out[:]
 		default:
 			return nil, fmt.Errorf("unsupported length for blake2b: %d", olen)
+		}
+	case isSkein256(code):
+		olen := code - SKEIN256_MIN + 1
+		switch olen {
+		default:
+			return nil, fmt.Errorf("unsupported length for skein256: %d", olen)
+		}
+	case isSkein512(code):
+		olen := code - SKEIN512_MIN + 1
+		switch olen {
+		default:
+			return nil, fmt.Errorf("unsupported length for skein512: %d", olen)
+		}
+	case isSkein1024(code):
+		olen := code - SKEIN1024_MIN + 1
+		switch olen {
+		default:
+			return nil, fmt.Errorf("unsupported length for skein1024: %d", olen)
 		}
 	default:
 		switch code {
@@ -110,6 +129,18 @@ func isBlake2s(code uint64) bool {
 }
 func isBlake2b(code uint64) bool {
 	return code >= BLAKE2B_MIN && code <= BLAKE2B_MAX
+}
+
+func isSkein256(code uint64) bool {
+	return code >= SKEIN256_MIN && code <= SKEIN256_MAX
+}
+
+func isSkein512(code uint64) bool {
+	return code >= SKEIN512_MIN && code <= SKEIN512_MAX
+}
+
+func isSkein1024(code uint64) bool {
+	return code >= SKEIN1024_MIN && code <= SKEIN1024_MAX
 }
 
 func sumID(data []byte) []byte {
