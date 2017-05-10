@@ -88,6 +88,7 @@ func init() {
 		Codes[c] = name
 		DefaultLengths[c] = int(n)
 	}
+
 	// Add skein256 (32 codes)
 	for c := uint64(SKEIN256_MIN); c <= SKEIN256_MAX; c++ {
 		n := c - SKEIN256_MIN + 1
@@ -96,6 +97,7 @@ func init() {
 		Codes[c] = name
 		DefaultLengths[c] = int(n)
 	}
+
 	// Add skein512 (64 codes)
 	for c := uint64(SKEIN512_MIN); c <= SKEIN512_MAX; c++ {
 		n := c - SKEIN512_MIN + 1
@@ -104,6 +106,7 @@ func init() {
 		Codes[c] = name
 		DefaultLengths[c] = int(n)
 	}
+
 	// Add skein1024 (128 codes)
 	for c := uint64(SKEIN1024_MIN); c <= SKEIN1024_MAX; c++ {
 		n := c - SKEIN1024_MIN + 1
