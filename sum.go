@@ -78,17 +78,17 @@ func Sum(data []byte, code uint64, length int) (Multihash, error) {
 		}
 	case isSkein256(code):
 		olen := code - SKEIN256_MIN + 1
-		state := skein.New(256, int(olen))[0]
+		state, _ := skein.New(256, int(olen))
 		out := state.Sum(data)
 		d = out[:]
 	case isSkein512(code):
 		olen := code - SKEIN512_MIN + 1
-		state := skein.New(512, int(olen))[0]
+		state, _ := skein.New(512, int(olen))
 		out := state.Sum(data)
 		d = out[:]
 	case isSkein1024(code):
 		olen := code - SKEIN1024_MIN + 1
-		state := skein.New(1024, int(olen))[0]
+		state, _ := skein.New(1024, int(olen))
 		out := state.Sum(data)
 		d = out[:]
 	default:
