@@ -7,11 +7,11 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/spaolacci/murmur3"
-	blake2b "golang.org/x/crypto/blake2b"
-	blake2s "golang.org/x/crypto/blake2s"
-	sha3 "golang.org/x/crypto/sha3"
-	keccak "leb.io/hashland/keccakpg"
+	keccak "gx/ipfs/QmQPWTeQJnJE7MYu6dJTiNTQRNuqBr41dis6UgY6Uekmgd/keccakpg"
+	blake2b "gx/ipfs/QmaPHkZLbQQbvcyavn8q1GFHg6o6yeceyHFSJ3Pjf3p3TQ/go-crypto/blake2b"
+	blake2s "gx/ipfs/QmaPHkZLbQQbvcyavn8q1GFHg6o6yeceyHFSJ3Pjf3p3TQ/go-crypto/blake2s"
+	sha3 "gx/ipfs/QmaPHkZLbQQbvcyavn8q1GFHg6o6yeceyHFSJ3Pjf3p3TQ/go-crypto/sha3"
+	"gx/ipfs/QmfJHywXQu98UeZtGJBQrPAR6AtmDjjbe3qjTo9piXHPnx/murmur3"
 	skein "leb.io/hashland/skein" // could use https://github.com/wernerd/Skein3Fish/tree/master/go as well
 )
 
@@ -45,13 +45,13 @@ func Sum(data []byte, code uint64, length int) (Multihash, error) {
 			out := blake2s.Sum256(data)
 			d = out[:]
 		default:
-			
+
 			// var sum [32]byte
 			// var tmp [olen]byte
 			// checkSum(&sum, olen, data)
 			// copy(tmp[:], sum[:olen])
 			// d = tmp
-			
+
 			return nil, fmt.Errorf("unsupported length for blake2s: %d", olen)
 		}
 	case isBlake2b(code):
@@ -67,13 +67,13 @@ func Sum(data []byte, code uint64, length int) (Multihash, error) {
 			out := blake2b.Sum512(data)
 			d = out[:]
 		default:
-			
+
 			// var sum [64]byte
 			// var tmp [olen]byte
 			// checkSum(&sum, olen, data)
 			// copy(tmp[:], sum[:olen])
 			// d = tmp
-			
+
 			return nil, fmt.Errorf("unsupported length for blake2b: %d", olen)
 		}
 	case isSkein256(code):

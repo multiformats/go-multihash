@@ -5,8 +5,8 @@ import (
 	"encoding/hex"
 	"fmt"
 
-	base58 "github.com/jbenet/go-base58"
 	mh "github.com/multiformats/go-multihash"
+	base58 "gx/ipfs/QmT8rehPR3F6bmwL6zjUN8XpiDBFFpMP2myPdC6ApsWfJf/go-base58"
 )
 
 func Decode(encoding, digest string) (mh.Multihash, error) {
