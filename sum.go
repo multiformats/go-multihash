@@ -102,7 +102,10 @@ func Sum(data []byte, code uint64, length int) (Multihash, error) {
 	if err != nil {
 		return m, err
 	}
-	return Encode(d[0:length], code)
+	if length >= 0 {
+		d = d[:length]
+	}
+	return Encode(d, code)
 }
 
 func isBlake2s(code uint64) bool {

@@ -126,7 +126,7 @@ var Codes = map[uint64]string{
 
 // DefaultLengths maps a hash code to it's default length
 var DefaultLengths = map[uint64]int{
-	ID:           32,
+	ID:           -1,
 	SHA1:         20,
 	SHA2_256:     32,
 	SHA2_512:     64,
