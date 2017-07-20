@@ -10,7 +10,7 @@ import (
 	"fmt"
 	"math"
 
-	b58 "github.com/jbenet/go-base58"
+	b58 "gx/ipfs/QmT8rehPR3F6bmwL6zjUN8XpiDBFFpMP2myPdC6ApsWfJf/go-base58"
 )
 
 // errors
@@ -53,10 +53,17 @@ const (
 	SHAKE_128 = 0x18
 	SHAKE_256 = 0x19
 
-	BLAKE2B_MIN = 0xb201
-	BLAKE2B_MAX = 0xb240
-	BLAKE2S_MIN = 0xb241
-	BLAKE2S_MAX = 0xb260
+	BLAKE2B_MIN = 0xB201
+	BLAKE2B_MAX = 0xB240
+	BLAKE2S_MIN = 0xB241
+	BLAKE2S_MAX = 0xB260
+
+	SKEIN256_MIN  = 0xB301
+	SKEIN256_MAX  = 0xB320
+	SKEIN512_MIN  = 0xB321
+	SKEIN512_MAX  = 0xB360
+	SKEIN1024_MIN = 0xB361
+	SKEIN1024_MAX = 0xB3E0
 
 	DBL_SHA2_256 = 0x56
 
@@ -77,6 +84,33 @@ func init() {
 	for c := uint64(BLAKE2S_MIN); c <= BLAKE2S_MAX; c++ {
 		n := c - BLAKE2S_MIN + 1
 		name := fmt.Sprintf("blake2s-%d", n*8)
+		Names[name] = c
+		Codes[c] = name
+		DefaultLengths[c] = int(n)
+	}
+
+	// Add skein256 (32 codes)
+	for c := uint64(SKEIN256_MIN); c <= SKEIN256_MAX; c++ {
+		n := c - SKEIN256_MIN + 1
+		name := fmt.Sprintf("skein256-%d", n*8)
+		Names[name] = c
+		Codes[c] = name
+		DefaultLengths[c] = int(n)
+	}
+
+	// Add skein512 (64 codes)
+	for c := uint64(SKEIN512_MIN); c <= SKEIN512_MAX; c++ {
+		n := c - SKEIN512_MIN + 1
+		name := fmt.Sprintf("skein512-%d", n*8)
+		Names[name] = c
+		Codes[c] = name
+		DefaultLengths[c] = int(n)
+	}
+
+	// Add skein1024 (128 codes)
+	for c := uint64(SKEIN1024_MIN); c <= SKEIN1024_MAX; c++ {
+		n := c - SKEIN1024_MIN + 1
+		name := fmt.Sprintf("skein1024-%d", n*8)
 		Names[name] = c
 		Codes[c] = name
 		DefaultLengths[c] = int(n)
