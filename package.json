@@ -30,6 +30,18 @@
       "hash": "QmfJHywXQu98UeZtGJBQrPAR6AtmDjjbe3qjTo9piXHPnx",
       "name": "murmur3",
       "version": "0.0.0"
+    },
+    {
+      "author": "minio",
+      "hash": "QmXTpwq2AkzQsPjKqFQDNY2bMdsAT53hUBETeyj8QRHTZU",
+      "name": "sha256-simd",
+      "version": "0.1.1"
+    },
+    {
+      "author": "minio",
+      "hash": "QmZp3eKdYQHHAneECmeK6HhiMwTPufmjC8DuuaGKv3unvx",
+      "name": "blake2b-simd",
+      "version": "0.1.1"
     }
   ],
   "gxVersion": "0.9.0",
