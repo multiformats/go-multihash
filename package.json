@@ -14,10 +14,10 @@
       "version": "0.0.0"
     },
     {
-      "author": "whyrusleeping",
-      "hash": "QmT8rehPR3F6bmwL6zjUN8XpiDBFFpMP2myPdC6ApsWfJf",
-      "name": "go-base58",
-      "version": "0.0.0"
+      "author": "mr-tron",
+      "hash": "QmQAMQVf7swZ43itcaVbuDrf4KcvHp9SA88K1TY4u3ybWC",
+      "name": "go-base58-fast",
+      "version": "0.1.0"
     },
     {
       "author": "whyrusleeping",
