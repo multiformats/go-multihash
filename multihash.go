@@ -10,7 +10,7 @@ import (
 	"fmt"
 	"math"
 
-	b58 "github.com/jbenet/go-base58"
+	b58 "github.com/mr-tron/base58/base58"
 )
 
 // errors
@@ -197,17 +197,8 @@ func (m Multihash) B58String() string {
 
 // FromB58String parses a B58-encoded multihash.
 func FromB58String(s string) (m Multihash, err error) {
-	// panic handler, in case we try accessing bytes incorrectly.
-	defer func() {
-		if e := recover(); e != nil {
-			m = Multihash{}
-			err = e.(error)
-		}
-	}()
-
-	//b58 smells like it can panic...
-	b := b58.Decode(s)
-	if len(b) == 0 {
+	b, err := b58.Decode(s)
+	if err != nil {
 		return Multihash{}, ErrInvalidMultihash
 	}
 
