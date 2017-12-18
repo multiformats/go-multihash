@@ -1,23 +1,19 @@
-sudo: false
 os:
   - linux
+
+sudo: false
 
 language: go
 
 go:
-    - 1.8
+  - 1.9.x
 
-install: true
-
-before_install:
+install:
   - make deps
 
 script:
-  - go vet
-  - go test -race -coverprofile=coverage.txt -covermode=atomic
-
-after_success:
-    - bash <(curl -s https://codecov.io/bash)
+  - bash <(curl -s https://raw.githubusercontent.com/ipfs/ci-helpers/master/travis-ci/run-standard-tests.sh)
+  - cd test && make test
 
 cache:
     directories:
