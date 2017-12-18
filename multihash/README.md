@@ -2,7 +2,7 @@
 
 The `multihash` tool uses `go-multihash` to hash things much like `shasum`.
 
-Warning: this is a **multihash** tool! Its digests follow the [multihash](https://github.com/jbenet/multihash) format.
+Warning: this is a **multihash** tool! Its digests follow the [multihash](https://github.com/multiformats/multihash) format.
 
 ### Install
 
