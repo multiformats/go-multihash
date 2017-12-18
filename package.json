@@ -49,6 +49,6 @@
   "license": "MIT",
   "name": "go-multihash",
   "releaseCmd": "git commit -a -m \"gx release $VERSION\"",
-  "version": "1.0.6"
+  "version": "1.0.7"
 }
 
