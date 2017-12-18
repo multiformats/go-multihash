@@ -5,7 +5,7 @@ import (
 	"encoding/hex"
 	"fmt"
 
-	base58 "github.com/jbenet/go-base58"
+	base58 "github.com/mr-tron/base58/base58"
 	mh "github.com/multiformats/go-multihash"
 )
 
@@ -16,7 +16,7 @@ func Decode(encoding, digest string) (mh.Multihash, error) {
 	case "hex":
 		return hex.DecodeString(digest)
 	case "base58":
-		return base58.Decode(digest), nil
+		return base58.Decode(digest)
 	case "base64":
 		return base64.StdEncoding.DecodeString(digest)
 	default:
