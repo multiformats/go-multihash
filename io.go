@@ -45,12 +45,18 @@ func (r *mhReader) ReadByte() (byte, error) {
 	if br, ok := r.r.(io.ByteReader); ok {
 		return br.ReadByte()
 	}
-	b := make([]byte, 1)
-	_, err := r.r.Read(b)
-	if err != nil {
-		return 0, err
+	var b [1]byte
+	n, err := r.r.Read(b[:])
+	if n == 1 {
+		return b[0], nil
 	}
-	return b[0], nil
+	if err == nil {
+		if n != 0 {
+			panic("reader returned an invalid length")
+		}
+		err = io.ErrNoProgress
+	}
+	return 0, err
 }
 
 func (r *mhReader) ReadMultihash() (Multihash, error) {
