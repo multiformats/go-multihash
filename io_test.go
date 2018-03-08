@@ -6,6 +6,39 @@ import (
 	"testing"
 )
 
+type evilReader struct {
+	buffer []byte
+}
+
+func (er *evilReader) Read(buf []byte) (int, error) {
+	n := copy(buf, er.buffer)
+	er.buffer = er.buffer[n:]
+	var err error
+	if len(er.buffer) == 0 {
+		err = io.EOF
+	}
+	return n, err
+}
+
+func TestEvilReader(t *testing.T) {
+	emptyHash, err := Sum(nil, ID, 0)
+	if err != nil {
+		t.Fatal(err)
+	}
+	r := NewReader(&evilReader{emptyHash})
+	h, err := r.ReadMultihash()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !bytes.Equal(h, []byte(emptyHash)) {
+		t.Fatal(err)
+	}
+	h, err = r.ReadMultihash()
+	if len([]byte(h)) > 0 || err != io.EOF {
+		t.Fatal("expected end of file")
+	}
+}
+
 func TestReader(t *testing.T) {
 
 	var buf bytes.Buffer
