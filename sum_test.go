@@ -3,6 +3,8 @@ package multihash
 import (
 	"bytes"
 	"encoding/hex"
+	"fmt"
+	"runtime"
 	"testing"
 )
 
@@ -96,5 +98,25 @@ func BenchmarkSum(b *testing.B) {
 	tc := sumTestCases[0]
 	for i := 0; i < b.N; i++ {
 		Sum([]byte(tc.input), tc.code, tc.length)
+	}
+}
+
+func BenchmarkBlake2B(b *testing.B) {
+	sizes := []uint64{128, 129, 130, 255, 256, 257, 386, 512}
+	for _, s := range sizes {
+		func(si uint64) {
+			b.Run(fmt.Sprintf("blake2b-%d", s), func(b *testing.B) {
+				arr := []byte("test data for some hashing, this is broken")
+				b.ResetTimer()
+				b.ReportAllocs()
+				for i := 0; i < b.N; i++ {
+					m, err := Sum(arr, BLAKE2B_MIN+si/8-1, -1)
+					if err != nil {
+						b.Fatal(err)
+					}
+					runtime.KeepAlive(m)
+				}
+			})
+		}(s)
 	}
 }
