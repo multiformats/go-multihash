@@ -5,6 +5,7 @@ import (
 	"crypto/sha512"
 	"errors"
 	"fmt"
+	"hash"
 
 	keccak "github.com/gxed/hashland/keccakpg"
 	blake2b "github.com/minio/blake2b-simd"
@@ -104,9 +105,18 @@ func isBlake2b(code uint64) bool {
 }
 
 func sumBlake2b(size uint8, data []byte) []byte {
-	hasher, err := blake2b.New(&blake2b.Config{Size: size})
-	if err != nil {
-		panic(err)
+	var hasher hash.Hash
+	switch size {
+	case 64:
+		hasher = blake2b.New512()
+	case 32:
+		hasher = blake2b.New256()
+	default:
+		var err error
+		hasher, err = blake2b.New(&blake2b.Config{Size: size})
+		if err != nil {
+			panic(err)
+		}
 	}
 
 	if _, err := hasher.Write(data); err != nil {
