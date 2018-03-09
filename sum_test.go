@@ -32,9 +32,18 @@ var sumTestCases = []SumTestCase{
 	SumTestCase{SHA3_384, -1, "beep boop", "153075a9cff1bcfbe8a7025aa225dd558fb002769d4bf3b67d2aaf180459172208bea989804aefccf060b583e629e5f41e8d"},
 	SumTestCase{SHA3_384, 16, "beep boop", "151075a9cff1bcfbe8a7025aa225dd558fb0"},
 	SumTestCase{DBL_SHA2_256, 32, "foo", "5620c7ade88fc7a21498a6a5e5c385e1f68bed822b72aa63c4a9a48a02c2466ee29e"},
+	SumTestCase{BLAKE2B_MAX, -1, "foo", "c0e40240ca002330e69d3e6b84a46a56a6533fd79d51d97a3bb7cad6c2ff43b354185d6dc1e723fb3db4ae0737e120378424c714bb982d9dc5bbd7a0ab318240ddd18f8d"},
 	SumTestCase{BLAKE2B_MAX, 64, "foo", "c0e40240ca002330e69d3e6b84a46a56a6533fd79d51d97a3bb7cad6c2ff43b354185d6dc1e723fb3db4ae0737e120378424c714bb982d9dc5bbd7a0ab318240ddd18f8d"},
+	SumTestCase{BLAKE2B_MAX - 32, -1, "foo", "a0e40220b8fe9f7f6255a6fa08f668ab632a8d081ad87983c77cd274e48ce450f0b349fd"},
 	SumTestCase{BLAKE2B_MAX - 32, 32, "foo", "a0e40220b8fe9f7f6255a6fa08f668ab632a8d081ad87983c77cd274e48ce450f0b349fd"},
-	SumTestCase{BLAKE2B_MAX - 16, 32, "foo", "b0e40220e629ee880953d32c8877e479e3b4cb0a4c9d5805e2b34c675b5a5863c4ad7d64"},
+	SumTestCase{BLAKE2B_MAX - 19, -1, "foo", "ade4022dca82ab956d5885e3f5db10cca94182f01a6ca2c47f9f4228497dcc9f4a0121c725468b852a71ec21fcbeb725df"},
+	SumTestCase{BLAKE2B_MAX - 19, 45, "foo", "ade4022dca82ab956d5885e3f5db10cca94182f01a6ca2c47f9f4228497dcc9f4a0121c725468b852a71ec21fcbeb725df"},
+	SumTestCase{BLAKE2B_MAX - 16, -1, "foo", "b0e40230e629ee880953d32c8877e479e3b4cb0a4c9d5805e2b34c675b5a5863c4ad7d64bb2a9b8257fac9d82d289b3d39eb9cc2"},
+	SumTestCase{BLAKE2B_MAX - 16, 48, "foo", "b0e40230e629ee880953d32c8877e479e3b4cb0a4c9d5805e2b34c675b5a5863c4ad7d64bb2a9b8257fac9d82d289b3d39eb9cc2"},
+	SumTestCase{BLAKE2B_MIN + 19, -1, "foo", "94e40214983ceba2afea8694cc933336b27b907f90c53a88"},
+	SumTestCase{BLAKE2B_MIN + 19, 20, "foo", "94e40214983ceba2afea8694cc933336b27b907f90c53a88"},
+	SumTestCase{BLAKE2B_MIN, -1, "foo", "81e4020152"},
+	SumTestCase{BLAKE2B_MIN, 1, "foo", "81e4020152"},
 	SumTestCase{BLAKE2S_MAX, 32, "foo", "e0e4022008d6cad88075de8f192db097573d0e829411cd91eb6ec65e8fc16c017edfdb74"},
 	SumTestCase{MURMUR3, 4, "beep boop", "2204243ddb9e"},
 	SumTestCase{KECCAK_224, -1, "beep boop", "1a1c2bd72cde2f75e523512999eb7639f17b699efe29bec342f5a0270896"},
@@ -80,20 +89,6 @@ func TestSum(t *testing.T) {
 		} else if s2 != m3.B58String() {
 			t.Error("b58 failing string")
 		}
-	}
-}
-
-func TestBlakeMissing(t *testing.T) {
-	data := []byte("abc")
-
-	_, err := Sum(data, BLAKE2B_MAX-2, -1)
-	if err == nil {
-		t.Error("blake2b-496 shouldn't be supported")
-	}
-
-	_, err = Sum(data, BLAKE2S_MAX-2, -1)
-	if err == nil {
-		t.Error("blake2s-240 shouldn't be supported")
 	}
 }
 
