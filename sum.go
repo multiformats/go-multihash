@@ -123,7 +123,7 @@ func sumBlake2b(size uint8, data []byte) []byte {
 		panic(err)
 	}
 
-	return hasher.Sum(nil)
+	return hasher.Sum(nil)[:]
 }
 
 func sumID(data []byte) []byte {
