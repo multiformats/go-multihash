@@ -35,7 +35,7 @@ func Sum(data []byte, code uint64, length int) (Multihash, error) {
 		}
 	}
 
-	if code == ID && length != len(data) {
+	if code == ID && length >= 0 && length != len(data) {
 		return m, fmt.Errorf("the length of the identity hash (%d) must be equal to the length of the data (%d)",
 			length, len(data))
 	}
