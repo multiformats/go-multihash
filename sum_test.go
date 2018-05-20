@@ -120,3 +120,33 @@ func BenchmarkBlake2B(b *testing.B) {
 		}(s)
 	}
 }
+
+// Test that the identity hash function checks
+// its `length` arguemnt for values that are
+// different to its `data` length.
+func TestSmallerLengthHashID(t *testing.T) {
+
+	data := []byte("Identity hash input data.")
+	dataLength := len(data)
+
+	// Normal case: `length == len(data)`.
+	_, err := sumID(data, dataLength)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Unconstrained length (-1): also allowed.
+	_, err = sumID(data, -1)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Any other variation of those two scenarios should fail.
+	for l := (dataLength - 1); l >= 0; l-- {
+		_, err = sumID(data, l)
+		if err == nil {
+			t.Fatal(fmt.Sprintf("identity hash of length %d smaller than data length %d didn't fail",
+				l, dataLength))
+		}
+	}
+}

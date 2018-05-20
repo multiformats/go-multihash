@@ -52,7 +52,7 @@ func Sum(data []byte, code uint64, length int) (Multihash, error) {
 	default:
 		switch code {
 		case ID:
-			d = sumID(data)
+			d, err = sumID(data, length)
 		case SHA1:
 			d = sumSHA1(data)
 		case SHA2_256:
@@ -116,8 +116,13 @@ func sumBlake2b(size uint8, data []byte) []byte {
 	return hasher.Sum(nil)[:]
 }
 
-func sumID(data []byte) []byte {
-	return data
+func sumID(data []byte, length int) ([]byte, error) {
+	if length >= 0 && length != len(data) {
+		return nil, fmt.Errorf("the length of the identity hash (%d) must be equal to the length of the data (%d)",
+			length, len(data))
+
+	}
+	return data, nil
 }
 
 func sumSHA1(data []byte) []byte {
