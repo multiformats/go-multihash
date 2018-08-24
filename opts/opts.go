@@ -39,6 +39,20 @@ var FlagValues = struct {
 	Algorithms: func() []string {
 		names := make([]string, 0, len(mh.Names))
 		for n := range mh.Names {
+			// There are too many of these for now.
+			// We can figure something better out later.
+			if strings.HasPrefix(n, "blake2") {
+				switch n {
+				case "blake2s-256":
+				case "blake2b-128":
+				case "blake2b-224":
+				case "blake2b-256":
+				case "blake2b-384":
+				case "blake2b-512":
+				default:
+					continue
+				}
+			}
 			names = append(names, n)
 		}
 		sort.Strings(names)
