@@ -9,12 +9,15 @@
 T = $(sort $(wildcard t[0-9][0-9][0-9][0-9]-*.sh))
 BINS = bin/multihash
 SHARNESS = lib/sharness/sharness.sh
+MULTIHASH_CMD = ../../multihash
+MULTIHASH_ROOT = ../../
 
 all: clean deps $(T) aggregate
 
 clean:
 	@echo "*** $@ ***"
 	-rm -rf test-results
+	-rm -rf $(BINS)
 
 $(T):
 	@echo "*** $@ ***"
@@ -30,8 +33,9 @@ $(SHARNESS):
 	@echo "*** installing $@ ***"
 	lib/install-sharness.sh
 
-bin/%:
-	@echo "*** installing $@ ***"
-	cd .. && make $@
+bin/multihash: $(MULTIHASH_ROOT)/**/*.go
+	go build -o bin/multihash $(MULTIHASH_CMD)
+
+bins: $(BINS)
 
 .PHONY: all clean $(T) aggregate
