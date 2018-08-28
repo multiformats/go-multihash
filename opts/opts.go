@@ -107,7 +107,7 @@ func strIn(a string, set []string) bool {
 
 // Check reads all the data in r, calculates its multihash,
 // and checks it matches h1
-func (o *Options) Check(r io.Reader, h1 mh.Multihash) error {
+func (o *Options) Check(r io.Reader, h1 mh.MultihashBytes) error {
 	h2, err := o.Multihash(r)
 	if err != nil {
 		return err
@@ -121,7 +121,7 @@ func (o *Options) Check(r io.Reader, h1 mh.Multihash) error {
 }
 
 // Multihash reads all the data in r and calculates its multihash.
-func (o *Options) Multihash(r io.Reader) (mh.Multihash, error) {
+func (o *Options) Multihash(r io.Reader) (mh.MultihashBytes, error) {
 	b, err := ioutil.ReadAll(r)
 	if err != nil {
 		return nil, err
