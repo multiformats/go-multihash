@@ -32,7 +32,7 @@ func Uvarint(buf string) (uint64, int) {
 }
 
 // Ulen returns the length of an varint in bytes
-func UvarintLen(buf string) (int) {
+func UvarintLen(buf string) int {
 	for i, b := range buf {
 		if b < 0x80 {
 			return i + 1
