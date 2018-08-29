@@ -12,7 +12,7 @@ import (
 type Reader interface {
 	io.Reader
 
-	ReadMultihash() (Multihash, error)
+	ReadMultihash() (MultihashBytes, error)
 }
 
 // Writer is an io.Writer wrapper that exposes a function
@@ -20,7 +20,7 @@ type Reader interface {
 type Writer interface {
 	io.Writer
 
-	WriteMultihash(Multihash) error
+	WriteMultihash(MultihashBytes) error
 }
 
 // NewReader wraps an io.Reader with a multihash.Reader
@@ -59,7 +59,7 @@ func (r *mhReader) ReadByte() (byte, error) {
 	return 0, err
 }
 
-func (r *mhReader) ReadMultihash() (Multihash, error) {
+func (r *mhReader) ReadMultihash() (MultihashBytes, error) {
 	code, err := binary.ReadUvarint(r)
 	if err != nil {
 		return nil, err
@@ -97,7 +97,7 @@ func (w *mhWriter) Write(buf []byte) (n int, err error) {
 	return w.w.Write(buf)
 }
 
-func (w *mhWriter) WriteMultihash(m Multihash) error {
+func (w *mhWriter) WriteMultihash(m MultihashBytes) error {
 	_, err := w.w.Write([]byte(m))
 	return err
 }

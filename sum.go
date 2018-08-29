@@ -20,8 +20,8 @@ var ErrSumNotSupported = errors.New("Function not implemented. Complain to lib m
 // Sum obtains the cryptographic sum of a given buffer. The length parameter
 // indicates the length of the resulting digest and passing a negative value
 // use default length values for the selected hash function.
-func Sum(data []byte, code uint64, length int) (Multihash, error) {
-	m := Multihash{}
+func Sum(data []byte, code uint64, length int) (MultihashBytes, error) {
+	m := MultihashBytes{}
 	err := error(nil)
 	if !ValidCode(code) {
 		return m, fmt.Errorf("invalid multihash code %d", code)

@@ -9,7 +9,7 @@ import (
 	mh "github.com/multiformats/go-multihash"
 )
 
-func Decode(encoding, digest string) (mh.Multihash, error) {
+func Decode(encoding, digest string) (mh.MultihashBytes, error) {
 	switch encoding {
 	case "raw":
 		return mh.Cast([]byte(digest))
@@ -24,7 +24,7 @@ func Decode(encoding, digest string) (mh.Multihash, error) {
 	}
 }
 
-func Encode(encoding string, hash mh.Multihash) (string, error) {
+func Encode(encoding string, hash mh.MultihashBytes) (string, error) {
 	switch encoding {
 	case "raw":
 		return string(hash), nil

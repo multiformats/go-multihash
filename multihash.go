@@ -10,6 +10,8 @@ import (
 	"fmt"
 	"math"
 
+	strbinary "github.com/multiformats/go-multihash/strbinary"
+
 	b58 "github.com/mr-tron/base58/base58"
 )
 
@@ -144,17 +146,8 @@ var DefaultLengths = map[uint64]int{
 	SHAKE_256:    64,
 }
 
-func uvarint(buf []byte) (uint64, []byte, error) {
-	n, c := binary.Uvarint(buf)
-
-	if c == 0 {
-		return n, buf, ErrVarintBufferShort
-	} else if c < 0 {
-		return n, buf[-c:], ErrVarintTooLong
-	} else {
-		return n, buf[c:], nil
-	}
-}
+// Multihash is the cannoical representation of a Multihash
+type Multihash struct{ str string }
 
 // DecodedMultihash represents a parsed multihash and allows
 // easy access to the different parts of a multihash.
@@ -168,38 +161,119 @@ type DecodedMultihash struct {
 // Multihash is byte slice with the following form:
 // <hash function code><digest size><hash function output>.
 // See the spec for more information.
-type Multihash []byte
+type MultihashBytes []byte
+
+// Builder contains a Sum method to create multihashes
+type Builder struct {
+	Type   uint64
+	Length int
+}
+
+// FromBinary creates a new multihash from the binary representation.  The
+// string is assumed to be a valid multihash.  It will panic if it is
+// unable to parse the string.
+func FromBinary(v string) Multihash {
+	// Sanity check that the string can be parsed.
+	if len(v) < 2 {
+		panic(ErrTooShort)
+	}
+	i := strbinary.UvarintLen(v)
+	digestLen, l := strbinary.Uvarint(v[i:])
+	i += l
+	if len(v[i:]) != int(digestLen) {
+		panic(ErrInvalidMultihash)
+	}
+	return Multihash{v}
+}
+
+// IsNil checkes in the multihash is the zero value
+func (m Multihash) IsNil() bool {
+	return m.str == ""
+}
+
+// String returns the hex string for debugging
+func (m Multihash) String() string {
+	return hex.EncodeToString([]byte(m.str))
+}
+
+// B58String returns the B58-encoded representation of a multihash.
+func (m Multihash) B58String() string {
+	return b58.Encode([]byte(m.str))
+}
+
+// Parts returns the components of the Multihash (Code, Name, Digest)
+func (m Multihash) Parts() (uint64, int, string) {
+	// Note: no need to check for errors as the New method guarantees
+	// the string can be parsed
+	i := 0
+	codec, l := strbinary.Uvarint(m.str)
+	i += l
+	digestLen, l := strbinary.Uvarint(m.str[i:])
+	i += l
+	return codec, int(digestLen), m.str[i:]
+}
+
+func (b Builder) Sum(data []byte) (Multihash, error) {
+	len := b.Length
+	if len <= 0 {
+		len = -1
+	}
+	hash, err := Sum(data, b.Type, len)
+	if err != nil {
+		return Multihash{}, err
+	}
+	return Multihash{string(hash)}, nil
+}
+
+// AsBytes converts the multihash to the MultihashBytes type
+func (m Multihash) AsBytes() MultihashBytes {
+	return MultihashBytes(m.str)
+}
+
+// Bytes returns the binary representation
+func (m Multihash) Bytes() []byte {
+	return []byte(m.str)
+}
+
+// Binary returns the binary representation as a string
+func (m Multihash) Binary() string {
+	return m.str
+}
+
+func (m MultihashBytes) Cast() Multihash {
+	return FromBinary(string(m))
+}
 
 // HexString returns the hex-encoded representation of a multihash.
-func (m *Multihash) HexString() string {
-	return hex.EncodeToString([]byte(*m))
+func (m MultihashBytes) HexString() string {
+	return hex.EncodeToString([]byte(m))
 }
 
 // String is an alias to HexString().
-func (m *Multihash) String() string {
+func (m MultihashBytes) String() string {
 	return m.HexString()
 }
 
 // FromHexString parses a hex-encoded multihash.
-func FromHexString(s string) (Multihash, error) {
+func FromHexString(s string) (MultihashBytes, error) {
 	b, err := hex.DecodeString(s)
 	if err != nil {
-		return Multihash{}, err
+		return MultihashBytes{}, err
 	}
 
 	return Cast(b)
 }
 
 // B58String returns the B58-encoded representation of a multihash.
-func (m Multihash) B58String() string {
+func (m MultihashBytes) B58String() string {
 	return b58.Encode([]byte(m))
 }
 
 // FromB58String parses a B58-encoded multihash.
-func FromB58String(s string) (m Multihash, err error) {
+func FromB58String(s string) (m MultihashBytes, err error) {
 	b, err := b58.Decode(s)
 	if err != nil {
-		return Multihash{}, ErrInvalidMultihash
+		return MultihashBytes{}, ErrInvalidMultihash
 	}
 
 	return Cast(b)
@@ -207,17 +281,17 @@ func FromB58String(s string) (m Multihash, err error) {
 
 // Cast casts a buffer onto a multihash, and returns an error
 // if it does not work.
-func Cast(buf []byte) (Multihash, error) {
+func Cast(buf []byte) (MultihashBytes, error) {
 	dm, err := Decode(buf)
 	if err != nil {
-		return Multihash{}, err
+		return MultihashBytes{}, err
 	}
 
 	if !ValidCode(dm.Code) {
-		return Multihash{}, ErrUnknownCode
+		return MultihashBytes{}, ErrUnknownCode
 	}
 
-	return Multihash(buf), nil
+	return MultihashBytes(buf), nil
 }
 
 // Decode parses multihash bytes into a DecodedMultihash.
@@ -297,4 +371,16 @@ func ValidCode(code uint64) bool {
 // AppCode checks whether a multihash code is part of the App range.
 func AppCode(code uint64) bool {
 	return code >= 0 && code < 0x10
+}
+
+func uvarint(buf []byte) (uint64, []byte, error) {
+	n, c := binary.Uvarint(buf)
+
+	if c == 0 {
+		return n, buf, ErrVarintBufferShort
+	} else if c < 0 {
+		return n, buf[-c:], ErrVarintTooLong
+	} else {
+		return n, buf[c:], nil
+	}
 }

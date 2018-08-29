@@ -50,7 +50,7 @@ var testCases = []TestCase{
 	TestCase{"4bca2b137edc580fe50a88983ef860ebaca36c857b1f492839d6d7392452a63c82cbebc68e3b70a2a1480b4bb5d437a7cba6ecf9d89f9ff3ccd14cd6146ea7e7", 0x14, "sha3-512"},
 }
 
-func (tc TestCase) Multihash() (Multihash, error) {
+func (tc TestCase) Multihash() (MultihashBytes, error) {
 	ob, err := hex.DecodeString(tc.hex)
 	if err != nil {
 		return nil, err

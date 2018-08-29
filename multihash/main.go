@@ -20,7 +20,7 @@ Options:
 // flags
 var opts *mhopts.Options
 var checkRaw string
-var checkMh mh.Multihash
+var checkMh mh.MultihashBytes
 var inputFilename string
 var quiet bool
 var help bool
