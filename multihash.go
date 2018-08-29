@@ -225,9 +225,14 @@ func (b Builder) Sum(data []byte) (Multihash, error) {
 	return Multihash{string(hash)}, nil
 }
 
-// AsBytes converts the multihash to bytes
+// AsBytes converts the multihash to the MultihashBytes type
 func (m Multihash) AsBytes() MultihashBytes {
 	return MultihashBytes(m.str)
+}
+
+// Bytes returns the binary representation
+func (m Multihash) Bytes() []byte {
+	return []byte(m.str)
 }
 
 // Binary returns the binary representation as a string
