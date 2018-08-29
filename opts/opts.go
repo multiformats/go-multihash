@@ -3,7 +3,6 @@
 package opts
 
 import (
-	"bytes"
 	"errors"
 	"flag"
 	"fmt"
@@ -113,7 +112,7 @@ func (o *Options) Check(r io.Reader, h1 mh.Multihash) error {
 		return err
 	}
 
-	if !bytes.Equal(h1, h2) {
+	if h1 != h2 {
 		return fmt.Errorf("computed checksum did not match")
 	}
 
@@ -124,7 +123,7 @@ func (o *Options) Check(r io.Reader, h1 mh.Multihash) error {
 func (o *Options) Multihash(r io.Reader) (mh.Multihash, error) {
 	b, err := ioutil.ReadAll(r)
 	if err != nil {
-		return nil, err
+		return mh.Nil, err
 	}
 
 	return mh.Sum(b, o.AlgorithmCode, o.Length)

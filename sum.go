@@ -44,7 +44,7 @@ func Sum(data []byte, code uint64, length int) (Multihash, error) {
 			out := blake2s.Sum256(data)
 			d = out[:]
 		default:
-			return nil, fmt.Errorf("unsupported length for blake2s: %d", olen)
+			return Nil, fmt.Errorf("unsupported length for blake2s: %d", olen)
 		}
 	case isBlake2b(code):
 		olen := uint8(code - BLAKE2B_MIN + 1)
@@ -93,7 +93,11 @@ func Sum(data []byte, code uint64, length int) (Multihash, error) {
 	if length >= 0 {
 		d = d[:length]
 	}
-	return Encode(d, code)
+	bts, err := Encode(d, code)
+	if err != nil {
+		return Nil, err
+	}
+	return Multihash{string(bts)}, nil
 }
 
 func isBlake2s(code uint64) bool {

@@ -53,7 +53,7 @@ var testCases = []TestCase{
 func (tc TestCase) Multihash() (Multihash, error) {
 	ob, err := hex.DecodeString(tc.hex)
 	if err != nil {
-		return nil, err
+		return Nil, err
 	}
 
 	pre := make([]byte, 2*binary.MaxVarintLen64)
@@ -107,7 +107,7 @@ func TestEncode(t *testing.T) {
 		if err != nil {
 			t.Error(err)
 		}
-		if !bytes.Equal(h, nb) {
+		if h.Binary() != string(nb) {
 			t.Error("Multihash func mismatch.")
 		}
 	}
@@ -257,7 +257,7 @@ func TestHex(t *testing.T) {
 			continue
 		}
 
-		if !bytes.Equal(mh, nb) {
+		if mh.Binary() != string(nb) {
 			t.Error("FromHexString failed", nb, mh)
 			continue
 		}
