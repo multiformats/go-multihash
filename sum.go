@@ -21,17 +21,26 @@ var ErrSumNotSupported = errors.New("Function not implemented. Complain to lib m
 // indicates the length of the resulting digest and passing a negative value
 // use default length values for the selected hash function.
 func Sum(data []byte, code uint64, length int) (Multihash, error) {
-	m := Multihash{}
+	bytes, err := SumToBytes(data, code, length)
+	if err != nil {
+		return Nil, err
+	}
+	return Multihash{string(bytes)}, nil
+}
+
+// SumToBytes is like Sum but returns raw bytes instead of a Multihash
+// type (that is now represented internally as a string).
+func SumToBytes(data []byte, code uint64, length int) ([]byte, error) {
 	err := error(nil)
 	if !ValidCode(code) {
-		return m, fmt.Errorf("invalid multihash code %d", code)
+		return nil, fmt.Errorf("invalid multihash code %d", code)
 	}
 
 	if length < 0 {
 		var ok bool
 		length, ok = DefaultLengths[code]
 		if !ok {
-			return m, fmt.Errorf("no default length for code %d", code)
+			return nil, fmt.Errorf("no default length for code %d", code)
 		}
 	}
 
@@ -44,7 +53,7 @@ func Sum(data []byte, code uint64, length int) (Multihash, error) {
 			out := blake2s.Sum256(data)
 			d = out[:]
 		default:
-			return Nil, fmt.Errorf("unsupported length for blake2s: %d", olen)
+			return nil, fmt.Errorf("unsupported length for blake2s: %d", olen)
 		}
 	case isBlake2b(code):
 		olen := uint8(code - BLAKE2B_MIN + 1)
@@ -84,20 +93,20 @@ func Sum(data []byte, code uint64, length int) (Multihash, error) {
 		case SHAKE_256:
 			d = sumSHAKE256(data)
 		default:
-			return m, ErrSumNotSupported
+			return nil, ErrSumNotSupported
 		}
 	}
 	if err != nil {
-		return m, err
+		return nil, err
 	}
 	if length >= 0 {
 		d = d[:length]
 	}
 	bts, err := Encode(d, code)
 	if err != nil {
-		return Nil, err
+		return nil, err
 	}
-	return Multihash{string(bts)}, nil
+	return bts, nil
 }
 
 func isBlake2s(code uint64) bool {
