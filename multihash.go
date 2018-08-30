@@ -247,16 +247,15 @@ func FromBinary(v string) Multihash {
 	return Multihash{v}
 }
 
-// Parts returns the components of the Multihash (Code, Name, Digest)
-func (m Multihash) Parts() (uint64, int, string) {
-	// Note: no need to check for errors as the New method guarantees
+// Parts returns the components of the Multihash: the Code and Digest.
+// The length part can be derived from the Digest length.
+func (m Multihash) Parts() (uint64, string) {
+	// Note: no need to check for errors as the FromBinary method guarantees
 	// the string can be parsed
-	i := 0
-	codec, l := strbinary.Uvarint(m.s)
-	i += l
-	digestLen, l := strbinary.Uvarint(m.s[i:])
-	i += l
-	return codec, int(digestLen), m.s[i:]
+	codec, i := strbinary.Uvarint(m.s)
+	// skip over Length component, no need to read it
+	i += strbinary.UvarintLen(m.s[i:])
+	return codec, m.s[i:]
 }
 
 // Cast casts a buffer onto a multihash, and returns an error
