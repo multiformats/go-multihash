@@ -9,6 +9,7 @@ import (
 	"errors"
 	"fmt"
 	"math"
+	"sort"
 
 	b58 "github.com/mr-tron/base58/base58"
 )
@@ -81,6 +82,13 @@ func init() {
 		Codes[c] = name
 		DefaultLengths[c] = int(n)
 	}
+
+	// Initialize NamesList
+	NamesList = make([]string, 0, len(Names))
+	for k, _ := range Names {
+		NamesList = append(NamesList, k)
+	}
+	sort.Strings(NamesList)
 }
 
 // Names maps the name of a hash to the code
@@ -103,6 +111,8 @@ var Names = map[string]uint64{
 	"shake-128":    SHAKE_128,
 	"shake-256":    SHAKE_256,
 }
+
+var NamesList []string
 
 // Codes maps a hash code to it's name
 var Codes = map[uint64]string{

@@ -35,7 +35,7 @@ var FlagValues = struct {
 	Algorithms []string
 }{
 	Encodings:  []string{"raw", "hex", "base58", "base64"},
-	Algorithms: []string{"sha1", "sha2-256", "sha2-512", "sha3"},
+	Algorithms: mh.NamesList,
 }
 
 // SetupFlags adds multihash related options to given flagset.
