@@ -10,6 +10,8 @@ import (
 	"fmt"
 	"math"
 
+	strbinary "github.com/multiformats/go-multihash/strbinary"
+
 	b58 "github.com/mr-tron/base58/base58"
 )
 
@@ -225,6 +227,36 @@ func FromB58String(s string) (m Multihash, err error) {
 	}
 
 	return Cast(b)
+}
+
+// FromBinary creates a new multihash from the binary
+// representation. The string is assumed to be a valid multihash.
+// This function will not alloc and will panic if it is unable to
+// parse the string.
+func FromBinary(v string) Multihash {
+	// Sanity check that the string can be parsed.
+	if len(v) < 2 {
+		panic(ErrTooShort)
+	}
+	i := strbinary.UvarintLen(v)
+	digestLen, l := strbinary.Uvarint(v[i:])
+	i += l
+	if len(v[i:]) != int(digestLen) {
+		panic(ErrInvalidMultihash)
+	}
+	return Multihash{v}
+}
+
+// Parts returns the components of the Multihash (Code, Name, Digest)
+func (m Multihash) Parts() (uint64, int, string) {
+	// Note: no need to check for errors as the New method guarantees
+	// the string can be parsed
+	i := 0
+	codec, l := strbinary.Uvarint(m.s)
+	i += l
+	digestLen, l := strbinary.Uvarint(m.s[i:])
+	i += l
+	return codec, int(digestLen), m.s[i:]
 }
 
 // Cast casts a buffer onto a multihash, and returns an error
