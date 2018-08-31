@@ -229,8 +229,8 @@ func FromB58String(s string) (m Multihash, err error) {
 	return Cast(b)
 }
 
-// New creates a new multihash from the binary representation.
-func New(v string) (Multihash, error) {
+// FromBinary creates a new multihash from the binary representation.
+func FromBinary(v string) (Multihash, error) {
 	if len(v) < 2 {
 		return Nil, ErrTooShort
 	}
@@ -249,24 +249,6 @@ func New(v string) (Multihash, error) {
 		return Nil, ErrInvalidMultihash
 	}
 	return Multihash{v}, nil
-}
-
-// FromBinary creates a new multihash from the binary
-// representation. The string is assumed to be a valid multihash.
-// This function will not alloc and will panic if it is unable to
-// parse the string.
-func FromBinary(v string) Multihash {
-	// Sanity check that the string can be parsed.
-	if len(v) < 2 {
-		panic(ErrTooShort)
-	}
-	i := strbinary.UvarintLen(v)
-	digestLen, l := strbinary.Uvarint(v[i:])
-	i += l
-	if len(v[i:]) != int(digestLen) {
-		panic(ErrInvalidMultihash)
-	}
-	return Multihash{v}
 }
 
 // Parts returns the components of the Multihash: the Code and Digest.
