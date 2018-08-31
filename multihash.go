@@ -170,7 +170,8 @@ type DecodedMultihash struct {
 	Digest []byte // Digest holds the raw multihash bytes
 }
 
-// Multihash is byte slice with the following form:
+// Multihash is the cannoical representation of a Multihash
+// It is repressed internally as a binary with the following form:
 // <hash function code><digest size><hash function output>.
 // See the spec for more information.
 type Multihash struct {
@@ -192,7 +193,7 @@ func (m Multihash) Bytes() []byte {
 	return []byte(m.s)
 }
 
-// String is an alias to HexString().
+// IsNil returns true if the multihash is empty.
 func (m Multihash) IsNil() bool {
 	return m.s == ""
 }
