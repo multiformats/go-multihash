@@ -236,16 +236,16 @@ func FromBinary(v string) (Multihash, error) {
 	}
 	i := 0
 	codec, l := strbinary.Uvarint(v)
-	i += l
 	if l <= 0 {
 		return Nil, ErrInvalidMultihash
 	}
 	if !ValidCode(codec) {
 		return Nil, ErrUnknownCode
 	}
+	i += l
 	digestLen, l := strbinary.Uvarint(v[i:])
 	i += l
-	if len(v[i:]) != int(digestLen) {
+	if l <= 0 || len(v[i:]) != int(digestLen) {
 		return Nil, ErrInvalidMultihash
 	}
 	return Multihash{v}, nil

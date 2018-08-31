@@ -18,7 +18,9 @@ package strbinary
 func Uvarint(buf string) (uint64, int) {
 	var x uint64
 	var s uint
-	for i, b := range buf {
+	// we have a binary string so we can't use a range loope
+	for i := 0; i < len(buf); i++ {
+		b := buf[i]
 		if b < 0x80 {
 			if i > 9 || i == 9 && b > 1 {
 				return 0, -(i + 1) // overflow
@@ -33,7 +35,9 @@ func Uvarint(buf string) (uint64, int) {
 
 // Ulen returns the length of an varint in bytes
 func UvarintLen(buf string) int {
-	for i, b := range buf {
+	// we have a binary string so we can't use a range loope
+	for i := 0; i < len(buf); i++ {
+		b := buf[i]
 		if b < 0x80 {
 			return i + 1
 		}
