@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"sort"
 	"strings"
 
 	mh "github.com/multiformats/go-multihash"
@@ -34,8 +35,29 @@ var FlagValues = struct {
 	Encodings  []string
 	Algorithms []string
 }{
-	Encodings:  []string{"raw", "hex", "base58", "base64"},
-	Algorithms: []string{"sha1", "sha2-256", "sha2-512", "sha3"},
+	Encodings: []string{"raw", "hex", "base58", "base64"},
+	Algorithms: func() []string {
+		names := make([]string, 0, len(mh.Names))
+		for n := range mh.Names {
+			// There are too many of these for now.
+			// We can figure something better out later.
+			if strings.HasPrefix(n, "blake2") {
+				switch n {
+				case "blake2s-256":
+				case "blake2b-128":
+				case "blake2b-224":
+				case "blake2b-256":
+				case "blake2b-384":
+				case "blake2b-512":
+				default:
+					continue
+				}
+			}
+			names = append(names, n)
+		}
+		sort.Strings(names)
+		return names
+	}(),
 }
 
 // SetupFlags adds multihash related options to given flagset.
