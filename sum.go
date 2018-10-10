@@ -164,14 +164,6 @@ func sumKeccak512(data []byte) []byte {
 	return h.Sum(nil)
 }
 
-func sumSHA3(data []byte) ([]byte, error) {
-	h := sha3.New512()
-	if _, err := h.Write(data); err != nil {
-		return nil, err
-	}
-	return h.Sum(nil), nil
-}
-
 func sumSHA3_512(data []byte) []byte {
 	a := sha3.Sum512(data)
 	return a[:]
