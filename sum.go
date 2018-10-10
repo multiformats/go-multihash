@@ -78,7 +78,7 @@ func Sum(data []byte, code uint64, length int) (Multihash, error) {
 		case DBL_SHA2_256:
 			d = sumSHA256(sumSHA256(data))
 		case MURMUR3:
-			d, err = sumMURMUR3(data)
+			d = sumMURMUR3(data)
 		case SHAKE_128:
 			d = sumSHAKE128(data)
 		case SHAKE_256:
@@ -169,14 +169,14 @@ func sumSHA3_512(data []byte) []byte {
 	return a[:]
 }
 
-func sumMURMUR3(data []byte) ([]byte, error) {
+func sumMURMUR3(data []byte) []byte {
 	number := murmur3.Sum32(data)
 	bytes := make([]byte, 4)
 	for i := range bytes {
 		bytes[i] = byte(number & 0xff)
 		number >>= 8
 	}
-	return bytes, nil
+	return bytes
 }
 
 func sumSHAKE128(data []byte) []byte {
