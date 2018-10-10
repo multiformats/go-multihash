@@ -17,6 +17,9 @@ import (
 // ErrSumNotSupported is returned when the Sum function code is not implemented
 var ErrSumNotSupported = errors.New("Function not implemented. Complain to lib maintainer.")
 
+// funcTable maps multicodec values to hash functions.
+var funcTable = make(map[uint64]func([]byte) []byte)
+
 // Sum obtains the cryptographic sum of a given buffer. The length parameter
 // indicates the length of the resulting digest and passing a negative value
 // use default length values for the selected hash function.
@@ -37,6 +40,8 @@ func Sum(data []byte, code uint64, length int) (Multihash, error) {
 
 	var d []byte
 	switch {
+	// TODO: Consider how to register blake funcs also. This length based is a
+	// special case which is more complex.
 	case isBlake2s(code):
 		olen := code - BLAKE2S_MIN + 1
 		switch olen {
@@ -53,38 +58,12 @@ func Sum(data []byte, code uint64, length int) (Multihash, error) {
 		switch code {
 		case ID:
 			d, err = sumID(data, length)
-		case SHA1:
-			d = sumSHA1(data)
-		case SHA2_256:
-			d = sumSHA256(data)
-		case SHA2_512:
-			d = sumSHA512(data)
-		case KECCAK_224:
-			d = sumKeccak224(data)
-		case KECCAK_256:
-			d = sumKeccak256(data)
-		case KECCAK_384:
-			d = sumKeccak384(data)
-		case KECCAK_512:
-			d = sumKeccak512(data)
-		case SHA3_224:
-			d = sumSHA3_224(data)
-		case SHA3_256:
-			d = sumSHA3_256(data)
-		case SHA3_384:
-			d = sumSHA3_384(data)
-		case SHA3_512:
-			d = sumSHA3_512(data)
-		case DBL_SHA2_256:
-			d = sumSHA256(sumSHA256(data))
-		case MURMUR3:
-			d = sumMURMUR3(data)
-		case SHAKE_128:
-			d = sumSHAKE128(data)
-		case SHAKE_256:
-			d = sumSHAKE256(data)
 		default:
-			return m, ErrSumNotSupported
+			hashFunc, ok := funcTable[code]
+			if !ok {
+				return m, ErrSumNotSupported
+			}
+			d = hashFunc(data)
 		}
 	}
 	if err != nil {
@@ -204,4 +183,51 @@ func sumSHA3_256(data []byte) []byte {
 func sumSHA3_224(data []byte) []byte {
 	a := sha3.Sum224(data)
 	return a[:]
+}
+
+func registerStdlibHashFuncs() {
+	RegisterHashFunc(SHA1, sumSHA1)
+	RegisterHashFunc(SHA2_512, sumSHA512)
+}
+
+func registerNonStdlibHashFuncs() {
+	RegisterHashFunc(SHA2_256, sumSHA256)
+	RegisterHashFunc(DBL_SHA2_256, func(data []byte) []byte {
+		return sumSHA256(sumSHA256(data))
+	})
+
+	RegisterHashFunc(KECCAK_224, sumKeccak224)
+	RegisterHashFunc(KECCAK_256, sumKeccak256)
+	RegisterHashFunc(KECCAK_384, sumKeccak384)
+	RegisterHashFunc(KECCAK_512, sumKeccak512)
+
+	RegisterHashFunc(SHA3_224, sumSHA3_224)
+	RegisterHashFunc(SHA3_256, sumSHA3_256)
+	RegisterHashFunc(SHA3_384, sumSHA3_384)
+	RegisterHashFunc(SHA3_512, sumSHA3_512)
+
+	RegisterHashFunc(MURMUR3, sumMURMUR3)
+
+	RegisterHashFunc(SHAKE_128, sumSHAKE128)
+	RegisterHashFunc(SHAKE_256, sumSHAKE256)
+}
+
+func init() {
+	registerStdlibHashFuncs()
+	registerNonStdlibHashFuncs()
+}
+
+// RegisterHashFunc adds an entry to the package-level code -> hash func map.
+func RegisterHashFunc(code uint64, hashFunc func([]byte) []byte) error {
+	if !ValidCode(code) {
+		return fmt.Errorf("code %v not valid", code)
+	}
+
+	_, ok := funcTable[code]
+	if ok {
+		return fmt.Errorf("hash func for code %v already registered", code)
+	}
+
+	funcTable[code] = hashFunc
+	return nil
 }
