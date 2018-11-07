@@ -39,28 +39,21 @@ func Sum(data []byte, code uint64, length int) (Multihash, error) {
 	}
 
 	var d []byte
-	switch {
-	// TODO: Consider how to register blake funcs also. This length based is a
-	// special case which is more complex.
-	case isBlake2s(code):
-		olen := code - BLAKE2S_MIN + 1
-		switch olen {
-		case 32:
-			out := blake2s.Sum256(data)
-			d = out[:]
-		default:
-			return nil, fmt.Errorf("unsupported length for blake2s: %d", olen)
-		}
-	case isBlake2b(code):
-		olen := uint8(code - BLAKE2B_MIN + 1)
-		d, err = sumBlake2b(data, olen)
-	default:
-        hashFunc, ok := funcTable[code]
-        if !ok {
-            return m, ErrSumNotSupported
-        }
-        d, err = hashFunc(data, len(data))
+	hashFunc, ok := funcTable[code]
+	if !ok {
+		return m, ErrSumNotSupported
 	}
+
+	var size int
+	switch {
+	case isBlake2s(code):
+		size = int(code - BLAKE2S_MIN + 1)
+	case isBlake2b(code):
+		size = int(code - BLAKE2B_MIN + 1)
+	default:
+		size = len(data)
+	}
+	d, err = hashFunc(data, size)
 	if err != nil {
 		return m, err
 	}
@@ -77,8 +70,15 @@ func isBlake2b(code uint64) bool {
 	return code >= BLAKE2B_MIN && code <= BLAKE2B_MAX
 }
 
-func sumBlake2b(data []byte, size uint8) ([]byte, error) {
-	hasher, err := blake2b.New(&blake2b.Config{Size: size})
+func sumBlake2s(data []byte, size int) ([]byte, error) {
+	if size != 32 {
+		return nil, fmt.Errorf("unsupported length for blake2s: %d", size)
+	}
+	d := blake2s.Sum256(data)
+	return d[:], nil
+}
+func sumBlake2b(data []byte, size int) ([]byte, error) {
+	hasher, err := blake2b.New(&blake2b.Config{Size: uint8(size)})
 	if err != nil {
 		return []byte{}, err
 	}
@@ -110,8 +110,8 @@ func sumSHA256(data []byte, length int) ([]byte, error) {
 }
 
 func sumDoubleSHA256(data []byte, length int) ([]byte, error) {
-    val, _ := sumSHA256(data, len(data))
-    return sumSHA256(val, len(val))
+	val, _ := sumSHA256(data, len(data))
+	return sumSHA256(val, len(val))
 }
 
 func sumSHA512(data []byte, length int) ([]byte, error) {
@@ -209,6 +209,16 @@ func registerNonStdlibHashFuncs() {
 
 	RegisterHashFunc(SHAKE_128, sumSHAKE128)
 	RegisterHashFunc(SHAKE_256, sumSHAKE256)
+
+	// Blake family of hash functions
+	// BLAKE2S
+	for c := uint64(BLAKE2S_MIN); c <= BLAKE2S_MAX; c++ {
+		RegisterHashFunc(c, sumBlake2s)
+	}
+	// BLAKE2B
+	for c := uint64(BLAKE2B_MIN); c <= BLAKE2B_MAX; c++ {
+		RegisterHashFunc(c, sumBlake2b)
+	}
 }
 
 func init() {
