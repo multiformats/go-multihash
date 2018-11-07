@@ -53,7 +53,7 @@ func Sum(data []byte, code uint64, length int) (Multihash, error) {
 		}
 	case isBlake2b(code):
 		olen := uint8(code - BLAKE2B_MIN + 1)
-		d = sumBlake2b(olen, data)
+		d, err = sumBlake2b(data, olen)
 	default:
         hashFunc, ok := funcTable[code]
         if !ok {
@@ -77,17 +77,17 @@ func isBlake2b(code uint64) bool {
 	return code >= BLAKE2B_MIN && code <= BLAKE2B_MAX
 }
 
-func sumBlake2b(size uint8, data []byte) []byte {
+func sumBlake2b(data []byte, size uint8) ([]byte, error) {
 	hasher, err := blake2b.New(&blake2b.Config{Size: size})
 	if err != nil {
-		panic(err)
+		return []byte{}, err
 	}
 
 	if _, err := hasher.Write(data); err != nil {
-		panic(err)
+		return []byte{}, err
 	}
 
-	return hasher.Sum(nil)[:]
+	return hasher.Sum(nil)[:], nil
 }
 
 func sumID(data []byte, length int) ([]byte, error) {
