@@ -18,7 +18,7 @@ import (
 var ErrSumNotSupported = errors.New("Function not implemented. Complain to lib maintainer.")
 
 // funcTable maps multicodec values to hash functions.
-var funcTable = make(map[uint64]func([]byte) []byte)
+var funcTable = make(map[uint64]func([]byte, int) ([]byte, error))
 
 // Sum obtains the cryptographic sum of a given buffer. The length parameter
 // indicates the length of the resulting digest and passing a negative value
@@ -63,7 +63,7 @@ func Sum(data []byte, code uint64, length int) (Multihash, error) {
 			if !ok {
 				return m, ErrSumNotSupported
 			}
-			d = hashFunc(data)
+			d, err = hashFunc(data, len(data))
 		}
 	}
 	if err != nil {
@@ -104,85 +104,90 @@ func sumID(data []byte, length int) ([]byte, error) {
 	return data, nil
 }
 
-func sumSHA1(data []byte) []byte {
+func sumSHA1(data []byte, length int) ([]byte, error) {
 	a := sha1.Sum(data)
-	return a[0:20]
+	return a[0:20], nil
 }
 
-func sumSHA256(data []byte) []byte {
+func sumSHA256(data []byte, length int) ([]byte, error) {
 	a := sha256.Sum256(data)
-	return a[0:32]
+	return a[0:32], nil
 }
 
-func sumSHA512(data []byte) []byte {
+func sumDoubleSHA256(data []byte, length int) ([]byte, error) {
+    val, _ := sumSHA256(data, len(data))
+    return sumSHA256(val, len(val))
+}
+
+func sumSHA512(data []byte, length int) ([]byte, error) {
 	a := sha512.Sum512(data)
-	return a[0:64]
+	return a[0:64], nil
 }
 
-func sumKeccak224(data []byte) []byte {
+func sumKeccak224(data []byte, length int) ([]byte, error) {
 	h := keccak.New224()
 	h.Write(data)
-	return h.Sum(nil)
+	return h.Sum(nil), nil
 }
 
-func sumKeccak256(data []byte) []byte {
+func sumKeccak256(data []byte, length int) ([]byte, error) {
 	h := keccak.New256()
 	h.Write(data)
-	return h.Sum(nil)
+	return h.Sum(nil), nil
 }
 
-func sumKeccak384(data []byte) []byte {
+func sumKeccak384(data []byte, length int) ([]byte, error) {
 	h := keccak.New384()
 	h.Write(data)
-	return h.Sum(nil)
+	return h.Sum(nil), nil
 }
 
-func sumKeccak512(data []byte) []byte {
+func sumKeccak512(data []byte, length int) ([]byte, error) {
 	h := keccak.New512()
 	h.Write(data)
-	return h.Sum(nil)
+	return h.Sum(nil), nil
 }
 
-func sumSHA3_512(data []byte) []byte {
+func sumSHA3_512(data []byte, length int) ([]byte, error) {
 	a := sha3.Sum512(data)
-	return a[:]
+	return a[:], nil
 }
 
-func sumMURMUR3(data []byte) []byte {
+func sumMURMUR3(data []byte, length int) ([]byte, error) {
 	number := murmur3.Sum32(data)
 	bytes := make([]byte, 4)
 	for i := range bytes {
 		bytes[i] = byte(number & 0xff)
 		number >>= 8
 	}
-	return bytes
+	return bytes, nil
 }
 
-func sumSHAKE128(data []byte) []byte {
+func sumSHAKE128(data []byte, length int) ([]byte, error) {
 	bytes := make([]byte, 32)
 	sha3.ShakeSum128(bytes, data)
-	return bytes
+	return bytes, nil
 }
 
-func sumSHAKE256(data []byte) []byte {
+func sumSHAKE256(data []byte, length int) ([]byte, error) {
 	bytes := make([]byte, 64)
 	sha3.ShakeSum256(bytes, data)
-	return bytes
+	return bytes, nil
 }
 
-func sumSHA3_384(data []byte) []byte {
+func sumSHA3_384(data []byte, length int) ([]byte, error) {
 	a := sha3.Sum384(data)
-	return a[:]
+	return a[:], nil
 }
 
-func sumSHA3_256(data []byte) []byte {
+func sumSHA3_256(data []byte, length int) ([]byte, error) {
 	a := sha3.Sum256(data)
-	return a[:]
+	return a[:], nil
 }
 
-func sumSHA3_224(data []byte) []byte {
+func sumSHA3_224(data []byte, length int) ([]byte, error) {
 	a := sha3.Sum224(data)
-	return a[:]
+	return a[:], nil
 }
 
 func registerStdlibHashFuncs() {
@@ -192,9 +197,7 @@ func registerStdlibHashFuncs() {
 
 func registerNonStdlibHashFuncs() {
 	RegisterHashFunc(SHA2_256, sumSHA256)
-	RegisterHashFunc(DBL_SHA2_256, func(data []byte) []byte {
-		return sumSHA256(sumSHA256(data))
-	})
+	RegisterHashFunc(DBL_SHA2_256, sumDoubleSHA256)
 
 	RegisterHashFunc(KECCAK_224, sumKeccak224)
 	RegisterHashFunc(KECCAK_256, sumKeccak256)
@@ -218,7 +221,7 @@ func init() {
 }
 
 // RegisterHashFunc adds an entry to the package-level code -> hash func map.
-func RegisterHashFunc(code uint64, hashFunc func([]byte) []byte) error {
+func RegisterHashFunc(code uint64, hashFunc func([]byte, int) ([]byte, error)) error {
 	if !ValidCode(code) {
 		return fmt.Errorf("code %v not valid", code)
 	}

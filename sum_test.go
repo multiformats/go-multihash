@@ -163,8 +163,8 @@ func TestRegisterHashFunc(t *testing.T) {
 		{SHA1, true},
 	}
 
-	doesNothing := func(data []byte) []byte {
-		return []byte{}
+	doesNothing := func(data []byte, length int) ([]byte, error) {
+		return []byte{}, nil
 	}
 
 	for _, tt := range tests {
