@@ -55,16 +55,11 @@ func Sum(data []byte, code uint64, length int) (Multihash, error) {
 		olen := uint8(code - BLAKE2B_MIN + 1)
 		d = sumBlake2b(olen, data)
 	default:
-		switch code {
-		case ID:
-			d, err = sumID(data, length)
-		default:
-			hashFunc, ok := funcTable[code]
-			if !ok {
-				return m, ErrSumNotSupported
-			}
-			d, err = hashFunc(data, len(data))
-		}
+        hashFunc, ok := funcTable[code]
+        if !ok {
+            return m, ErrSumNotSupported
+        }
+        d, err = hashFunc(data, len(data))
 	}
 	if err != nil {
 		return m, err
@@ -191,6 +186,7 @@ func sumSHA3_224(data []byte, length int) ([]byte, error) {
 }
 
 func registerStdlibHashFuncs() {
+	RegisterHashFunc(ID, sumID)
 	RegisterHashFunc(SHA1, sumSHA1)
 	RegisterHashFunc(SHA2_512, sumSHA512)
 }
