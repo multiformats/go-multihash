@@ -158,7 +158,6 @@ func TestRegisterHashFunc(t *testing.T) {
 		code      uint64
 		shouldErr bool
 	}{
-		{ID, false},
 		{9999, true},
 		{SHA1, true},
 	}
