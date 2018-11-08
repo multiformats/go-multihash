@@ -80,11 +80,11 @@ func sumBlake2s(data []byte, size int) ([]byte, error) {
 func sumBlake2b(data []byte, size int) ([]byte, error) {
 	hasher, err := blake2b.New(&blake2b.Config{Size: uint8(size)})
 	if err != nil {
-		return []byte{}, err
+		return nil, err
 	}
 
 	if _, err := hasher.Write(data); err != nil {
-		return []byte{}, err
+		return nil, err
 	}
 
 	return hasher.Sum(nil)[:], nil
@@ -227,6 +227,8 @@ func init() {
 }
 
 // RegisterHashFunc adds an entry to the package-level code -> hash func map.
+// The hash function must return at least the requested number of bytes. If it
+// returns more, the hash will be truncated.
 func RegisterHashFunc(code uint64, hashFunc func([]byte, int) ([]byte, error)) error {
 	if !ValidCode(code) {
 		return fmt.Errorf("code %v not valid", code)
