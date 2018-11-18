@@ -50,6 +50,8 @@ func Sum(data []byte, code uint64, length int) (Multihash, error) {
 		size = int(code - BLAKE2S_MIN + 1)
 	case isBlake2b(code):
 		size = int(code - BLAKE2B_MIN + 1)
+	case ID:
+		size = length
 	default:
 		size = len(data)
 	}
