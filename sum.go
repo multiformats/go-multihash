@@ -44,18 +44,7 @@ func Sum(data []byte, code uint64, length int) (Multihash, error) {
 		return m, ErrSumNotSupported
 	}
 
-	var size int
-	switch {
-	case isBlake2s(code):
-		size = int(code - BLAKE2S_MIN + 1)
-	case isBlake2b(code):
-		size = int(code - BLAKE2B_MIN + 1)
-	case ID:
-		size = length
-	default:
-		size = len(data)
-	}
-	d, err = hashFunc(data, size)
+	d, err = hashFunc(data, length)
 	if err != nil {
 		return m, err
 	}
@@ -215,11 +204,17 @@ func registerNonStdlibHashFuncs() {
 	// Blake family of hash functions
 	// BLAKE2S
 	for c := uint64(BLAKE2S_MIN); c <= BLAKE2S_MAX; c++ {
-		RegisterHashFunc(c, sumBlake2s)
+		size := int(c - BLAKE2S_MIN + 1)
+		RegisterHashFunc(c, func(buf []byte, _ int) ([]byte, error) {
+			return sumBlake2s(buf, size)
+		})
 	}
 	// BLAKE2B
 	for c := uint64(BLAKE2B_MIN); c <= BLAKE2B_MAX; c++ {
-		RegisterHashFunc(c, sumBlake2b)
+		size := int(c - BLAKE2B_MIN + 1)
+		RegisterHashFunc(c, func(buf []byte, _ int) ([]byte, error) {
+			return sumBlake2b(buf, size)
+		})
 	}
 }
 
