@@ -17,8 +17,16 @@ import (
 // ErrSumNotSupported is returned when the Sum function code is not implemented
 var ErrSumNotSupported = errors.New("Function not implemented. Complain to lib maintainer.")
 
+// HashFunc is a hash function that hashes data into digest.
+//
+// The length is the size the digest will be truncated to. While the hash
+// function isn't responsible for truncating the digest, it may want to error if
+// the length is invalid for the hash function (e.g., truncation would make the
+// hash useless).
+type HashFunc func(data []byte, length int) (digest []byte, err error)
+
 // funcTable maps multicodec values to hash functions.
-var funcTable = make(map[uint64]func([]byte, int) ([]byte, error))
+var funcTable = make(map[uint64]HashFunc)
 
 // Sum obtains the cryptographic sum of a given buffer. The length parameter
 // indicates the length of the resulting digest and passing a negative value
@@ -216,7 +224,7 @@ func init() {
 // RegisterHashFunc adds an entry to the package-level code -> hash func map.
 // The hash function must return at least the requested number of bytes. If it
 // returns more, the hash will be truncated.
-func RegisterHashFunc(code uint64, hashFunc func([]byte, int) ([]byte, error)) error {
+func RegisterHashFunc(code uint64, hashFunc HashFunc) error {
 	if !ValidCode(code) {
 		return fmt.Errorf("code %v not valid", code)
 	}
