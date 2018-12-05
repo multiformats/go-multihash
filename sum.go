@@ -51,13 +51,6 @@ func Sum(data []byte, code uint64, length int) (Multihash, error) {
 	return Encode(d, code)
 }
 
-func isBlake2s(code uint64) bool {
-	return code >= BLAKE2S_MIN && code <= BLAKE2S_MAX
-}
-func isBlake2b(code uint64) bool {
-	return code >= BLAKE2B_MIN && code <= BLAKE2B_MAX
-}
-
 func sumBlake2s(data []byte, size int) ([]byte, error) {
 	if size != 32 {
 		return nil, fmt.Errorf("unsupported length for blake2s: %d", size)
