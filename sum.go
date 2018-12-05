@@ -24,29 +24,26 @@ var funcTable = make(map[uint64]func([]byte, int) ([]byte, error))
 // indicates the length of the resulting digest and passing a negative value
 // use default length values for the selected hash function.
 func Sum(data []byte, code uint64, length int) (Multihash, error) {
-	m := Multihash{}
-	err := error(nil)
 	if !ValidCode(code) {
-		return m, fmt.Errorf("invalid multihash code %d", code)
+		return nil, fmt.Errorf("invalid multihash code %d", code)
 	}
 
 	if length < 0 {
 		var ok bool
 		length, ok = DefaultLengths[code]
 		if !ok {
-			return m, fmt.Errorf("no default length for code %d", code)
+			return nil, fmt.Errorf("no default length for code %d", code)
 		}
 	}
 
-	var d []byte
 	hashFunc, ok := funcTable[code]
 	if !ok {
-		return m, ErrSumNotSupported
+		return nil, ErrSumNotSupported
 	}
 
-	d, err = hashFunc(data, length)
+	d, err := hashFunc(data, length)
 	if err != nil {
-		return m, err
+		return nil, err
 	}
 	if length >= 0 {
 		d = d[:length]
