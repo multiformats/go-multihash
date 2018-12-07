@@ -26,25 +26,8 @@
 go get github.com/multiformats/go-multihash
 ```
 
-Note that `go-multihash` is packaged with Gx, so it is recommended to use Gx to install and use it (see Usage section).
-
 ## Usage
 
-### Using Gx and Gx-go
-
-This module is packaged with [Gx](https://github.com/whyrusleeping/gx). In order to use it in your own project it is recommended that you:
-
-```sh
-go get -u github.com/whyrusleeping/gx
-go get -u github.com/whyrusleeping/gx-go
-cd <your-project-repository>
-gx init
-gx import github.com/multiformats/go-multihash
-gx install --global
-gx-go --rewrite
-```
-
-Please check [Gx](https://github.com/whyrusleeping/gx) and [Gx-go](https://github.com/whyrusleeping/gx-go) documentation for more information.
 
 ### Example
 
