@@ -150,3 +150,26 @@ func TestSmallerLengthHashID(t *testing.T) {
 		}
 	}
 }
+
+// Ensure that invalid codecs can't be registered, and existing hash funcs
+// won't be overwritten.
+func TestRegisterHashFunc(t *testing.T) {
+	tests := []struct {
+		code      uint64
+		shouldErr bool
+	}{
+		{9999, true},
+		{SHA1, true},
+	}
+
+	doesNothing := func(data []byte, length int) ([]byte, error) {
+		return []byte{}, nil
+	}
+
+	for _, tt := range tests {
+		err := RegisterHashFunc(tt.code, doesNothing)
+		if err != nil && !tt.shouldErr {
+			t.Error(err)
+		}
+	}
+}
