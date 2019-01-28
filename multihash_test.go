@@ -190,19 +190,9 @@ func ExampleDecode() {
 func TestValidCode(t *testing.T) {
 	for i := uint64(0); i < 0xff; i++ {
 		_, ok := tCodes[i]
-		b := AppCode(i) || ok
 
-		if ValidCode(i) != b {
+		if ValidCode(i) != ok {
 			t.Error("ValidCode incorrect for: ", i)
-		}
-	}
-}
-
-func TestAppCode(t *testing.T) {
-	for i := uint64(0); i < 0xff; i++ {
-		b := i >= 0 && i < 0x10
-		if AppCode(i) != b {
-			t.Error("AppCode incorrect for: ", i)
 		}
 	}
 }

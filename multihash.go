@@ -288,18 +288,6 @@ func EncodeName(buf []byte, name string) ([]byte, error) {
 
 // ValidCode checks whether a multihash code is valid.
 func ValidCode(code uint64) bool {
-	if AppCode(code) {
-		return true
-	}
-
-	if _, ok := Codes[code]; ok {
-		return true
-	}
-
-	return false
-}
-
-// AppCode checks whether a multihash code is part of the App range.
-func AppCode(code uint64) bool {
-	return code >= 0 && code < 0x10
+	_, ok := Codes[code]
+	return ok
 }
