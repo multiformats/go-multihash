@@ -271,7 +271,7 @@ func Encode(buf []byte, code uint64) ([]byte, error) {
 		return nil, ErrUnknownCode
 	}
 
-	start := make([]byte, 2*binary.MaxVarintLen64)
+	start := make([]byte, 2*binary.MaxVarintLen64, 2*binary.MaxVarintLen64+len(buf))
 	spot := start
 	n := binary.PutUvarint(spot, code)
 	spot = start[n:]
