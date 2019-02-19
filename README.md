@@ -77,10 +77,6 @@ hex: 11140beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33
 obj: sha1 0x11 20 0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33
 ```
 
-## Maintainers
-
-Captain: [@Kubuxu](https://github.com/Kubuxu).
-
 ## Contribute
 
 Contributions welcome. Please check out [the issues](https://github.com/multiformats/go-multihash/issues).
