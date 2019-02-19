@@ -26,12 +26,6 @@
       "version": "0.0.1"
     },
     {
-      "author": "whyrusleeping",
-      "hash": "QmfJHywXQu98UeZtGJBQrPAR6AtmDjjbe3qjTo9piXHPnx",
-      "name": "murmur3",
-      "version": "0.0.0"
-    },
-    {
       "author": "minio",
       "hash": "QmcTzQXRcU2vf8yX5EEboz1BSvWC7wWmeYAKVQmhp8WZYU",
       "name": "sha256-simd",
@@ -42,6 +36,12 @@
       "hash": "QmZp3eKdYQHHAneECmeK6HhiMwTPufmjC8DuuaGKv3unvx",
       "name": "blake2b-simd",
       "version": "0.1.1"
+    },
+    {
+      "author": "whyrusleeping",
+      "hash": "QmWAXZgFyppTRshtnVHJ8LnA1yoHjUr41ZnsWPoA8wnSgF",
+      "name": "hashland-murmur3",
+      "version": "0.0.1"
     }
   ],
   "gxVersion": "0.9.0",
