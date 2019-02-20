@@ -7,9 +7,9 @@ import (
 	"fmt"
 
 	keccak "github.com/gxed/hashland/keccakpg"
+	murmur3 "github.com/gxed/hashland/murmur3"
 	blake2b "github.com/minio/blake2b-simd"
 	sha256 "github.com/minio/sha256-simd"
-	murmur3 "github.com/spaolacci/murmur3"
 	blake2s "golang.org/x/crypto/blake2s"
 	sha3 "golang.org/x/crypto/sha3"
 )
