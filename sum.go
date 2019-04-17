@@ -1,6 +1,7 @@
 package multihash
 
 import (
+	"crypto/md5"
 	"crypto/sha1"
 	"crypto/sha512"
 	"errors"
@@ -98,6 +99,11 @@ func sumSHA256(data []byte, length int) ([]byte, error) {
 	return a[0:32], nil
 }
 
+func sumMD5(data []byte, length int) ([]byte, error) {
+	a := md5.Sum(data)
+	return a[0:md5.Size], nil
+}
+
 func sumDoubleSHA256(data []byte, length int) ([]byte, error) {
 	val, _ := sumSHA256(data, len(data))
 	return sumSHA256(val, len(val))
@@ -178,6 +184,7 @@ func registerStdlibHashFuncs() {
 	RegisterHashFunc(ID, sumID)
 	RegisterHashFunc(SHA1, sumSHA1)
 	RegisterHashFunc(SHA2_512, sumSHA512)
+	RegisterHashFunc(MD5, sumMD5)
 }
 
 func registerNonStdlibHashFuncs() {
