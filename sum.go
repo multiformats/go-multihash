@@ -7,10 +7,9 @@ import (
 	"errors"
 	"fmt"
 
-	keccak "github.com/gxed/hashland/keccakpg"
-	murmur3 "github.com/gxed/hashland/murmur3"
 	blake2b "github.com/minio/blake2b-simd"
 	sha256 "github.com/minio/sha256-simd"
+	murmur3 "github.com/spaolacci/murmur3"
 	blake2s "golang.org/x/crypto/blake2s"
 	sha3 "golang.org/x/crypto/sha3"
 )
@@ -113,27 +112,14 @@ func sumSHA512(data []byte, length int) ([]byte, error) {
 	a := sha512.Sum512(data)
 	return a[0:64], nil
 }
-
-func sumKeccak224(data []byte, length int) ([]byte, error) {
-	h := keccak.New224()
-	h.Write(data)
-	return h.Sum(nil), nil
-}
-
 func sumKeccak256(data []byte, length int) ([]byte, error) {
-	h := keccak.New256()
-	h.Write(data)
-	return h.Sum(nil), nil
-}
-
-func sumKeccak384(data []byte, length int) ([]byte, error) {
-	h := keccak.New384()
+	h := sha3.NewLegacyKeccak256()
 	h.Write(data)
 	return h.Sum(nil), nil
 }
 
 func sumKeccak512(data []byte, length int) ([]byte, error) {
-	h := keccak.New512()
+	h := sha3.NewLegacyKeccak512()
 	h.Write(data)
 	return h.Sum(nil), nil
 }
@@ -191,9 +177,7 @@ func registerNonStdlibHashFuncs() {
 	RegisterHashFunc(SHA2_256, sumSHA256)
 	RegisterHashFunc(DBL_SHA2_256, sumDoubleSHA256)
 
-	RegisterHashFunc(KECCAK_224, sumKeccak224)
 	RegisterHashFunc(KECCAK_256, sumKeccak256)
-	RegisterHashFunc(KECCAK_384, sumKeccak384)
 	RegisterHashFunc(KECCAK_512, sumKeccak512)
 
 	RegisterHashFunc(SHA3_224, sumSHA3_224)
