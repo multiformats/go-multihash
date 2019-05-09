@@ -31,7 +31,7 @@ type ErrInconsistentLen struct {
 }
 
 func (e ErrInconsistentLen) Error() string {
-	return fmt.Sprintf("multihash length inconsistent: %v", e.dm)
+	return fmt.Sprintf("multihash length inconsistent: expected %d, got %d", e.dm.Length, len(e.dm.Digest))
 }
 
 // constants
