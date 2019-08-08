@@ -5,6 +5,7 @@ import (
 	"encoding/binary"
 	"encoding/hex"
 	"fmt"
+	"strings"
 	"testing"
 )
 
@@ -173,6 +174,34 @@ func TestTable(t *testing.T) {
 		}
 		if Names[v] != k {
 			t.Error("Table mismatch: ", Names[v], k)
+		}
+	}
+
+	for name, code := range Names {
+		if tCodes[code] != name {
+			if strings.HasPrefix(name, "blake") {
+				// skip these
+				continue
+			}
+			if name == "sha3" {
+				// tested as "sha3-512"
+				continue
+			}
+			t.Error("missing test case for: ", name)
+		}
+	}
+
+	for code, name := range Codes {
+		if tCodes[code] != name {
+			if strings.HasPrefix(name, "blake") {
+				// skip these
+				continue
+			}
+			if name == "sha3" {
+				// tested as "sha3-512"
+				continue
+			}
+			t.Error("missing test case for: ", name)
 		}
 	}
 }
