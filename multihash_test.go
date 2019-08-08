@@ -5,6 +5,7 @@ import (
 	"encoding/binary"
 	"encoding/hex"
 	"fmt"
+	"strings"
 	"testing"
 )
 
@@ -20,7 +21,7 @@ var tCodes = map[uint64]string{
 	0x16:   "sha3-256",
 	0x17:   "sha3-224",
 	0x56:   "dbl-sha2-256",
-	0x22:   "murmur3",
+	0x22:   "murmur3-128",
 	0x1A:   "keccak-224",
 	0x1B:   "keccak-256",
 	0x1C:   "keccak-384",
@@ -45,7 +46,7 @@ var testCases = []TestCase{
 	{"2c26b46b68ffc68ff99b453c1d30413413422d706483bfa0f98a5e886266e7ae", 0x12, "sha2-256"},
 	{"2c26b46b", 0x12, "sha2-256"},
 	{"2c26b46b68ffc68ff99b453c1d30413413", 0xb240, "blake2b-512"},
-	{"243ddb9e", 0x22, "murmur3"},
+	{"243ddb9e", 0x22, "murmur3-128"},
 	{"f00ba4", 0x1b, "keccak-256"},
 	{"f84e95cb5fbd2038863ab27d3cdeac295ad2d4ab96ad1f4b070c0bf36078ef08", 0x18, "shake-128"},
 	{"1af97f7818a28edfdfce5ec66dbdc7e871813816d7d585fe1f12475ded5b6502b7723b74e2ee36f2651a10a8eaca72aa9148c3c761aaceac8f6d6cc64381ed39", 0x19, "shake-256"},
@@ -173,6 +174,34 @@ func TestTable(t *testing.T) {
 		}
 		if Names[v] != k {
 			t.Error("Table mismatch: ", Names[v], k)
+		}
+	}
+
+	for name, code := range Names {
+		if tCodes[code] != name {
+			if strings.HasPrefix(name, "blake") {
+				// skip these
+				continue
+			}
+			if name == "sha3" {
+				// tested as "sha3-512"
+				continue
+			}
+			t.Error("missing test case for: ", name)
+		}
+	}
+
+	for code, name := range Codes {
+		if tCodes[code] != name {
+			if strings.HasPrefix(name, "blake") {
+				// skip these
+				continue
+			}
+			if name == "sha3" {
+				// tested as "sha3-512"
+				continue
+			}
+			t.Error("missing test case for: ", name)
 		}
 	}
 }
