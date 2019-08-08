@@ -185,7 +185,7 @@ func registerNonStdlibHashFuncs() {
 	RegisterHashFunc(SHA3_384, sumSHA3_384)
 	RegisterHashFunc(SHA3_512, sumSHA3_512)
 
-	RegisterHashFunc(MURMUR3, sumMURMUR3)
+	RegisterHashFunc(MURMUR3_128, sumMURMUR3)
 
 	RegisterHashFunc(SHAKE_128, sumSHAKE128)
 	RegisterHashFunc(SHAKE_256, sumSHAKE256)
