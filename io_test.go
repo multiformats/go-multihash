@@ -21,7 +21,7 @@ func (er *evilReader) Read(buf []byte) (int, error) {
 }
 
 func TestEvilReader(t *testing.T) {
-	emptyHash, err := Sum(nil, ID, 0)
+	emptyHash, err := Sum(nil, IDENTITY, 0)
 	if err != nil {
 		t.Fatal(err)
 	}
