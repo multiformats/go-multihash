@@ -89,7 +89,7 @@ func init() {
 
 // Names maps the name of a hash to the code
 var Names = map[string]uint64{
-	"id":           ID,
+	"identity":     ID,
 	"sha1":         SHA1,
 	"sha2-256":     SHA2_256,
 	"sha2-512":     SHA2_512,
@@ -112,7 +112,7 @@ var Names = map[string]uint64{
 
 // Codes maps a hash code to it's name
 var Codes = map[uint64]string{
-	ID:           "id",
+	ID:           "identity",
 	SHA1:         "sha1",
 	SHA2_256:     "sha2-256",
 	SHA2_512:     "sha2-512",
