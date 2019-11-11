@@ -21,6 +21,8 @@ var sumTestCases = []SumTestCase{
 	{SHA1, -1, "foo", "11140beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33"},
 	{SHA1, 10, "foo", "110a0beec7b5ea3f0fdbc95d"},
 	{SHA2_256, -1, "foo", "12202c26b46b68ffc68ff99b453c1d30413413422d706483bfa0f98a5e886266e7ae"},
+	{SHA2_256, 31, "foo", "121f2c26b46b68ffc68ff99b453c1d30413413422d706483bfa0f98a5e886266e7"},
+	{SHA2_256, 32, "foo", "12202c26b46b68ffc68ff99b453c1d30413413422d706483bfa0f98a5e886266e7ae"},
 	{SHA2_256, 16, "foo", "12102c26b46b68ffc68ff99b453c1d304134"},
 	{SHA2_512, -1, "foo", "1340f7fbba6e0636f890e56fbbf3283e524c6fa3204ae298382d624741d0dc6638326e282c41be5e4254d8820772c5518a2c5a8c0c7f7eda19594a7eb539453e1ed7"},
 	{SHA2_512, 32, "foo", "1320f7fbba6e0636f890e56fbbf3283e524c6fa3204ae298382d624741d0dc663832"},
@@ -170,5 +172,12 @@ func TestRegisterHashFunc(t *testing.T) {
 		if err != nil && !tt.shouldErr {
 			t.Error(err)
 		}
+	}
+}
+
+func TestTooLargeLength(t *testing.T) {
+	_, err := Sum([]byte("test"), SHA2_256, 33)
+	if err != ErrLenTooLarge {
+		t.Fatal("bad error", err)
 	}
 }

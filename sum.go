@@ -17,6 +17,8 @@ import (
 // ErrSumNotSupported is returned when the Sum function code is not implemented
 var ErrSumNotSupported = errors.New("Function not implemented. Complain to lib maintainer.")
 
+var ErrLenTooLarge = errors.New("requested length was too large for digest")
+
 // HashFunc is a hash function that hashes data into digest.
 //
 // The length is the size the digest will be truncated to. While the hash
@@ -53,6 +55,10 @@ func Sum(data []byte, code uint64, length int) (Multihash, error) {
 	if err != nil {
 		return nil, err
 	}
+	if len(d) < length {
+		return nil, ErrLenTooLarge
+	}
+
 	if length >= 0 {
 		d = d[:length]
 	}
