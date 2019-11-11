@@ -241,10 +241,6 @@ func Decode(buf []byte) (*DecodedMultihash, error) {
 		return nil, err
 	}
 
-	if len(buf) != rlen {
-		return nil, fmt.Errorf("trailing bytes in multihash Decode (%d != %d)", len(buf), rlen)
-	}
-
 	dm := &DecodedMultihash{
 		Code:   code,
 		Name:   Codes[code],
@@ -252,7 +248,7 @@ func Decode(buf []byte) (*DecodedMultihash, error) {
 		Digest: hdig,
 	}
 
-	if len(dm.Digest) != dm.Length {
+	if len(buf) != rlen {
 		return nil, ErrInconsistentLen{dm}
 	}
 
