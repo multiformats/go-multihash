@@ -31,11 +31,9 @@ func (s *Set) Has(m Multihash) bool {
 // Visit adds a multihash only if it is not in the set already.  Returns true
 // if the multihash was added (was not in the set before).
 func (s *Set) Visit(m Multihash) bool {
-	// Do things directly here to avoid []byte -> string operations
-	str := string(m)
-	_, ok := s.set[str]
+	_, ok := s.set[string(m)]
 	if !ok {
-		s.set[str] = struct{}{}
+		s.set[string(m)] = struct{}{}
 		return true
 	}
 	return false
