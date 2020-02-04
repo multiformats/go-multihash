@@ -309,7 +309,12 @@ func TestBadVarint(t *testing.T) {
 		t.Error("expected error from cut-off varint, got: ", err)
 	}
 
-	_, err = Cast([]byte{128, 1})
+	_, err = Cast([]byte{129, 0})
+	if err != varint.ErrNotMinimal {
+		t.Error("expected error non-minimal varint, got: ", err)
+	}
+
+	_, err = Cast([]byte{128, 0})
 	if err != varint.ErrNotMinimal {
 		t.Error("expected error non-minimal varint, got: ", err)
 	}
