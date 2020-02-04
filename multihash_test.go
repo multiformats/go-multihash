@@ -7,6 +7,8 @@ import (
 	"fmt"
 	"strings"
 	"testing"
+
+	"github.com/multiformats/go-varint"
 )
 
 // maybe silly, but makes it so changing
@@ -299,12 +301,17 @@ func TestDecodeErrorInvalid(t *testing.T) {
 
 func TestBadVarint(t *testing.T) {
 	_, err := Cast([]byte{129, 128, 128, 128, 128, 128, 128, 128, 128, 128, 129, 1})
-	if err != ErrVarintTooLong {
+	if err != varint.ErrOverflow {
 		t.Error("expected error from varint longer than 64bits, got: ", err)
 	}
-	_, err = Cast([]byte{128, 128, 128})
-	if err != ErrVarintBufferShort {
+	_, err = Cast([]byte{129, 128, 128})
+	if err != varint.ErrUnderflow {
 		t.Error("expected error from cut-off varint, got: ", err)
+	}
+
+	_, err = Cast([]byte{128, 1})
+	if err != varint.ErrNotMinimal {
+		t.Error("expected error non-minimal varint, got: ", err)
 	}
 }
 
