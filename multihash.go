@@ -4,13 +4,13 @@
 package multihash
 
 import (
-	"encoding/binary"
 	"encoding/hex"
 	"errors"
 	"fmt"
 	"math"
 
 	b58 "github.com/mr-tron/base58/base58"
+	"github.com/multiformats/go-varint"
 )
 
 // errors
@@ -159,7 +159,10 @@ var DefaultLengths = map[uint64]int{
 }
 
 func uvarint(buf []byte) (uint64, []byte, error) {
-	n, c := binary.Uvarint(buf)
+	n, c, err := varint.FromUvarint(buf)
+	if err != nil {
+		return n, buf, err
+	}
 
 	if c == 0 {
 		return n, buf, ErrVarintBufferShort
@@ -258,18 +261,16 @@ func Decode(buf []byte) (*DecodedMultihash, error) {
 // Encode a hash digest along with the specified function code.
 // Note: the length is derived from the length of the digest itself.
 func Encode(buf []byte, code uint64) ([]byte, error) {
-
 	if !ValidCode(code) {
 		return nil, ErrUnknownCode
 	}
 
-	start := make([]byte, 2*binary.MaxVarintLen64, 2*binary.MaxVarintLen64+len(buf))
-	spot := start
-	n := binary.PutUvarint(spot, code)
-	spot = start[n:]
-	n += binary.PutUvarint(spot, uint64(len(buf)))
+	newBuf := make([]byte, varint.UvarintSize(code)+varint.UvarintSize(uint64(len(buf)))+len(buf))
+	n := varint.PutUvarint(newBuf, code)
+	n += varint.PutUvarint(newBuf[n:], uint64(len(buf)))
 
-	return append(start[:n], buf...), nil
+	copy(newBuf[n:], buf)
+	return newBuf, nil
 }
 
 // EncodeName is like Encode() but providing a string name
