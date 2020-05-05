@@ -72,7 +72,17 @@ func sumBlake2s(data []byte, size int) ([]byte, error) {
 	d := blake2s.Sum256(data)
 	return d[:], nil
 }
+
 func sumBlake2b(data []byte, size int) ([]byte, error) {
+	switch size {
+	case 32:
+		out := blake2b.Sum256(data)
+		return out[:], nil
+	case 64:
+		out := blake2b.Sum512(data)
+		return out[:], nil
+	}
+
 	hasher, err := blake2b.New(&blake2b.Config{Size: uint8(size)})
 	if err != nil {
 		return nil, err
