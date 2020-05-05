@@ -73,6 +73,17 @@ func sumBlake2s(data []byte, size int) ([]byte, error) {
 	return d[:], nil
 }
 func sumBlake2b(data []byte, size int) ([]byte, error) {
+	// special case these lengths to avoid allocations.
+	switch size {
+	case 32:
+		hash := blake2b.Sum256(data)
+		return hash[:], nil
+	case 64:
+		hash := blake2b.Sum512(data)
+		return hash[:], nil
+	}
+
+	// Ok, allocate away.
 	hasher, err := blake2b.New(&blake2b.Config{Size: uint8(size)})
 	if err != nil {
 		return nil, err
