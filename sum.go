@@ -65,10 +65,7 @@ func Sum(data []byte, code uint64, length int) (Multihash, error) {
 	return Encode(d, code)
 }
 
-func sumBlake2s(data []byte, size int) ([]byte, error) {
-	if size != 32 {
-		return nil, fmt.Errorf("unsupported length for blake2s: %d", size)
-	}
+func sumBlake2s32(data []byte, _ int) ([]byte, error) {
 	d := blake2s.Sum256(data)
 	return d[:], nil
 }
@@ -198,12 +195,9 @@ func registerNonStdlibHashFuncs() {
 
 	// Blake family of hash functions
 	// BLAKE2S
-	for c := uint64(BLAKE2S_MIN); c <= BLAKE2S_MAX; c++ {
-		size := int(c - BLAKE2S_MIN + 1)
-		RegisterHashFunc(c, func(buf []byte, _ int) ([]byte, error) {
-			return sumBlake2s(buf, size)
-		})
-	}
+	//
+	// We only support 32byte (256 bit)
+	RegisterHashFunc(BLAKE2S_MIN+31, sumBlake2s32)
 	// BLAKE2B
 	for c := uint64(BLAKE2B_MIN); c <= BLAKE2B_MAX; c++ {
 		size := int(c - BLAKE2B_MIN + 1)
