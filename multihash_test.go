@@ -32,6 +32,8 @@ var tCodes = map[uint64]string{
 	0x19:   "shake-256",
 	0x1100: "x11",
 	0xd5:   "md5",
+	0x1012: "sha2-256-trunc254-padded",
+	0xb401: "poseidon-bls12_381-a2-fc1",
 }
 
 type TestCase struct {
@@ -54,6 +56,8 @@ var testCases = []TestCase{
 	{"1af97f7818a28edfdfce5ec66dbdc7e871813816d7d585fe1f12475ded5b6502b7723b74e2ee36f2651a10a8eaca72aa9148c3c761aaceac8f6d6cc64381ed39", 0x19, "shake-256"},
 	{"4bca2b137edc580fe50a88983ef860ebaca36c857b1f492839d6d7392452a63c82cbebc68e3b70a2a1480b4bb5d437a7cba6ecf9d89f9ff3ccd14cd6146ea7e7", 0x14, "sha3-512"},
 	{"d41d8cd98f00b204e9800998ecf8427e", 0xd5, "md5"},
+	{"14fcb37dc45fa9a3c492557121bd4d461c0db40e5dcfcaa98498bd238486c307", 0x1012, "sha2-256-trunc254-padded"},
+	{"14fcb37dc45fa9a3c492557121bd4d461c0db40e5dcfcaa98498bd238486c307", 0xb401, "poseidon-bls12_381-a2-fc1"},
 }
 
 func (tc TestCase) Multihash() (Multihash, error) {
