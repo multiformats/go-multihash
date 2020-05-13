@@ -181,3 +181,18 @@ func TestTooLargeLength(t *testing.T) {
 		t.Fatal("bad error", err)
 	}
 }
+
+func TestBasicSum(t *testing.T) {
+	for code, name := range Codes {
+		defaultLen, ok := DefaultLengths[code]
+		if !ok {
+			defaultLen = 32
+		}
+		_, err := Sum([]byte("test"), code, defaultLen)
+		switch err {
+		case ErrSumNotSupported, nil:
+		default:
+			t.Errorf("unexpected error for %s: %s", name, err)
+		}
+	}
+}
