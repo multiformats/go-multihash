@@ -30,10 +30,8 @@ type HashFunc func(data []byte, length int) (digest []byte, err error)
 // funcTable maps multicodec values to hash functions.
 var funcTable = make(map[uint64]HashFunc)
 
-// Sum obtains the cryptographic sum of a given buffer. The length parameter
-// indicates the length of the resulting digest and passing a negative value
-// use default length values for the selected hash function.
-func Sum(data []byte, code uint64, length int) (Multihash, error) {
+// Digest exposes all the functionality of Sum except for the last step of converting to a multihash
+func Digest(data []byte, code uint64, length int) ([]byte, error) {
 	if !ValidCode(code) {
 		return nil, fmt.Errorf("invalid multihash code %d", code)
 	}
@@ -61,6 +59,18 @@ func Sum(data []byte, code uint64, length int) (Multihash, error) {
 
 	if length >= 0 {
 		d = d[:length]
+	}
+
+	return d, nil
+}
+
+// Sum obtains the cryptographic sum of a given buffer. The length parameter
+// indicates the length of the resulting digest and passing a negative value
+// use default length values for the selected hash function.
+func Sum(data []byte, code uint64, length int) (Multihash, error) {
+	d, err := Digest(data, code, length)
+	if err != nil {
+		return nil, err
 	}
 	return Encode(d, code)
 }
