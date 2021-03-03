@@ -231,13 +231,9 @@ func FromB58String(s string) (m Multihash, err error) {
 // Cast casts a buffer onto a multihash, and returns an error
 // if it does not work.
 func Cast(buf []byte) (Multihash, error) {
-	dm, err := Decode(buf)
+	_, err := Decode(buf)
 	if err != nil {
 		return Multihash{}, err
-	}
-
-	if !ValidCode(dm.Code) {
-		return Multihash{}, ErrUnknownCode
 	}
 
 	return Multihash(buf), nil
@@ -267,9 +263,8 @@ func Decode(buf []byte) (*DecodedMultihash, error) {
 // Encode a hash digest along with the specified function code.
 // Note: the length is derived from the length of the digest itself.
 func Encode(buf []byte, code uint64) ([]byte, error) {
-	if !ValidCode(code) {
-		return nil, ErrUnknownCode
-	}
+	// REVIEW: if we remove the strict ValidCode check, this can no longer error.  Change signiture?
+	// REVIEW: this function always causes heap allocs... but when used, this value is almost always going to be appended to another buffer (either as part of CID creation, or etc) -- should this whole function be rethought and alternatives offered?
 
 	newBuf := make([]byte, varint.UvarintSize(code)+varint.UvarintSize(uint64(len(buf)))+len(buf))
 	n := varint.PutUvarint(newBuf, code)
@@ -283,12 +278,6 @@ func Encode(buf []byte, code uint64) ([]byte, error) {
 // instead of a numeric code. See Names for allowed values.
 func EncodeName(buf []byte, name string) ([]byte, error) {
 	return Encode(buf, Names[name])
-}
-
-// ValidCode checks whether a multihash code is valid.
-func ValidCode(code uint64) bool {
-	_, ok := Codes[code]
-	return ok
 }
 
 // readMultihashFromBuf reads a multihash from the given buffer, returning the

@@ -1,4 +1,4 @@
-package multihash
+package multihash_test
 
 import (
 	"encoding/csv"
@@ -7,6 +7,9 @@ import (
 	"strconv"
 	"strings"
 	"testing"
+
+	"github.com/multiformats/go-multihash"
+	_ "github.com/multiformats/go-multihash/register/all"
 )
 
 func TestSpec(t *testing.T) {
@@ -55,7 +58,7 @@ func TestSpec(t *testing.T) {
 		expectedFunctions[code] = name
 	}
 
-	for code, name := range Codes {
+	for code, name := range multihash.Codes {
 		expectedName, ok := expectedFunctions[code]
 		if !ok {
 			t.Errorf("multihash %q (%x) not defined in the spec", name, code)
@@ -104,7 +107,7 @@ func TestSpecVectors(t *testing.T) {
 		expectedStr := testCase[3]
 
 		t.Run(fmt.Sprintf("%d/%s/%s", i, function, lengthStr), func(t *testing.T) {
-			code, ok := Names[function]
+			code, ok := multihash.Names[function]
 			if !ok {
 				t.Skipf("skipping %s: not supported", function)
 				return
@@ -119,7 +122,7 @@ func TestSpecVectors(t *testing.T) {
 				t.Fatal("expected the length to be a multiple of 8")
 			}
 
-			actual, err := Sum([]byte(input), code, int(length/8))
+			actual, err := multihash.Sum([]byte(input), code, int(length/8))
 			if err != nil {
 				t.Fatalf("failed to hash: %s", err)
 			}
