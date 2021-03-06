@@ -22,14 +22,14 @@ import (
 )
 
 func init() {
-	multihash.Register(0x14, sha3.New512)
-	multihash.Register(0x15, sha3.New384)
-	multihash.Register(0x16, sha3.New256)
-	multihash.Register(0x17, sha3.New224)
-	multihash.Register(0x18, func() hash.Hash { return shakeNormalizer{sha3.NewShake128(), 128 / 8 * 2} })
-	multihash.Register(0x19, func() hash.Hash { return shakeNormalizer{sha3.NewShake256(), 256 / 8 * 2} })
-	multihash.Register(0x1B, sha3.NewLegacyKeccak256)
-	multihash.Register(0x1D, sha3.NewLegacyKeccak512)
+	multihash.Register(multihash.SHA3_512, sha3.New512)
+	multihash.Register(multihash.SHA3_384, sha3.New384)
+	multihash.Register(multihash.SHA3_256, sha3.New256)
+	multihash.Register(multihash.SHA3_224, sha3.New224)
+	multihash.Register(multihash.SHAKE_128, func() hash.Hash { return shakeNormalizer{sha3.NewShake128(), 128 / 8 * 2} })
+	multihash.Register(multihash.SHAKE_256, func() hash.Hash { return shakeNormalizer{sha3.NewShake256(), 256 / 8 * 2} })
+	multihash.Register(multihash.KECCAK_256, sha3.NewLegacyKeccak256)
+	multihash.Register(multihash.KECCAK_512, sha3.NewLegacyKeccak512)
 }
 
 // sha3.ShakeHash presents a somewhat odd interface, and requires a wrapper to normalize it to the usual hash.Hash interface.

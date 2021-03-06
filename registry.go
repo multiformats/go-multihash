@@ -57,12 +57,10 @@ func GetHasher(indicator uint64) (hash.Hash, error) {
 }
 
 func init() {
-	Register(0x00, func() hash.Hash { return &identityMultihash{} })
-	Register(0xd5, md5.New)
-	Register(0x11, sha1.New)
-	Register(0x12, sha256.New)
-	Register(0x13, sha512.New)
-	Register(0x1f, sha256.New224)
-	Register(0x20, sha512.New384)
-	Register(0x56, func() hash.Hash { return &doubleSha256{sha256.New()} })
+	Register(IDENTITY, func() hash.Hash { return &identityMultihash{} })
+	Register(MD5, md5.New)
+	Register(SHA1, sha1.New)
+	Register(SHA2_256, sha256.New)
+	Register(SHA2_512, sha512.New)
+	Register(DBL_SHA2_256, func() hash.Hash { return &doubleSha256{sha256.New()} })
 }

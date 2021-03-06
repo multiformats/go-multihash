@@ -19,5 +19,5 @@ import (
 )
 
 func init() {
-	multihash.Register(0x12, sha256.New)
+	multihash.Register(multihash.SHA2_256, sha256.New)
 }
