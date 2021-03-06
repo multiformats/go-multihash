@@ -22,21 +22,21 @@ import (
 )
 
 const (
-	BLAKE2B_MIN = 0xb201
-	BLAKE2B_MAX = 0xb240
-	BLAKE2S_MIN = 0xb241
-	BLAKE2S_MAX = 0xb260
+	blake2b_min = 0xb201
+	blake2b_max = 0xb240
+	blake2s_min = 0xb241
+	blake2s_max = 0xb260
 )
 
 func init() {
-	// BLAKE2S
+	// blake2s
 	// This package only enables support for 32byte (256 bit) blake2s.
-	multihash.Register(BLAKE2S_MIN+31, func() hash.Hash { h, _ := blake2s.New256(nil); return h })
+	multihash.Register(blake2s_min+31, func() hash.Hash { h, _ := blake2s.New256(nil); return h })
 
-	// BLAKE2B
+	// blake2b
 	// There's a whole range of these.
-	for c := uint64(BLAKE2B_MIN); c <= BLAKE2B_MAX; c++ {
-		size := int(c - BLAKE2B_MIN + 1)
+	for c := uint64(blake2b_min); c <= blake2b_max; c++ {
+		size := int(c - blake2b_min + 1)
 
 		// special case these lengths to avoid allocations.
 		switch size {
