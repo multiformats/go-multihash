@@ -9,6 +9,7 @@ import (
 	mh "github.com/multiformats/go-multihash"
 	mhopts "github.com/multiformats/go-multihash/opts"
 	_ "github.com/multiformats/go-multihash/register/all"
+	_ "github.com/multiformats/go-multihash/register/miniosha256"
 )
 
 var usage = `usage: %s [options] [FILE]
