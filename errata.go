@@ -27,9 +27,8 @@ type doubleSha256 struct {
 }
 
 func (x doubleSha256) Sum(digest []byte) []byte {
-	intermediate := [sha256.Size]byte{}
-	x.Hash.Sum(intermediate[0:0])
+	digest = x.Hash.Sum(digest)
 	h2 := sha256.New()
-	h2.Write(intermediate[:])
-	return h2.Sum(digest)
+	h2.Write(digest)
+	return h2.Sum(digest[0:0])
 }
