@@ -131,11 +131,7 @@ func TestTooLargeLength(t *testing.T) {
 
 func TestBasicSum(t *testing.T) {
 	for code, name := range multihash.Codes {
-		defaultLen, ok := multihash.DefaultLengths[code]
-		if !ok {
-			defaultLen = 32
-		}
-		_, err := multihash.Sum([]byte("test"), code, defaultLen)
+		_, err := multihash.Sum([]byte("test"), code, -1)
 		switch err {
 		case multihash.ErrSumNotSupported, nil:
 		default:

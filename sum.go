@@ -2,7 +2,6 @@ package multihash
 
 import (
 	"errors"
-	"fmt"
 )
 
 // ErrSumNotSupported is returned when the Sum function code is not implemented
@@ -30,11 +29,7 @@ func Sum(data []byte, code uint64, length int) (Multihash, error) {
 
 	// Deal with any truncation.
 	if length < 0 {
-		var ok bool
-		length, ok = DefaultLengths[code]
-		if !ok {
-			return nil, fmt.Errorf("no default length for code %d", code)
-		}
+		length = hasher.Size()
 	}
 	if len(sum) < length {
 		return nil, ErrLenTooLarge

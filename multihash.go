@@ -80,7 +80,6 @@ func init() {
 		name := fmt.Sprintf("blake2b-%d", n*8)
 		Names[name] = c
 		Codes[c] = name
-		DefaultLengths[c] = int(n)
 	}
 
 	// Add blake2s (32 codes)
@@ -89,7 +88,6 @@ func init() {
 		name := fmt.Sprintf("blake2s-%d", n*8)
 		Names[name] = c
 		Codes[c] = name
-		DefaultLengths[c] = int(n)
 	}
 }
 
@@ -140,28 +138,6 @@ var Codes = map[uint64]string{
 	X11:                       "x11",
 	POSEIDON_BLS12_381_A1_FC1: "poseidon-bls12_381-a2-fc1",
 	MD5:                       "md5",
-}
-
-// DefaultLengths maps a hash code to it's default length
-var DefaultLengths = map[uint64]int{
-	IDENTITY:     -1,
-	SHA1:         20,
-	SHA2_256:     32,
-	SHA2_512:     64,
-	SHA3_224:     28,
-	SHA3_256:     32,
-	SHA3_384:     48,
-	SHA3_512:     64,
-	DBL_SHA2_256: 32,
-	KECCAK_224:   28,
-	KECCAK_256:   32,
-	MURMUR3_128:  4,
-	KECCAK_384:   48,
-	KECCAK_512:   64,
-	SHAKE_128:    32,
-	SHAKE_256:    64,
-	X11:          64,
-	MD5:          16,
 }
 
 func uvarint(buf []byte) (uint64, []byte, error) {
