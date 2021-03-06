@@ -52,7 +52,6 @@ var sumTestCases = []SumTestCase{
 	{multihash.BLAKE2B_MIN, -1, "foo", "81e4020152"},
 	{multihash.BLAKE2B_MIN, 1, "foo", "81e4020152"},
 	{multihash.BLAKE2S_MAX, 32, "foo", "e0e4022008d6cad88075de8f192db097573d0e829411cd91eb6ec65e8fc16c017edfdb74"},
-	{multihash.MURMUR3_128, 4, "beep boop", "2204243ddb9e"},
 	{multihash.KECCAK_256, 32, "foo", "1b2041b1a0649752af1b28b3dc29a1556eee781e4a4c3a1f7f53f90fa834de098c4d"},
 	{multihash.KECCAK_512, -1, "beep boop", "1d40e161c54798f78eba3404ac5e7e12d27555b7b810e7fd0db3f25ffa0c785c438331b0fbb6156215f69edf403c642e5280f4521da9bd767296ec81f05100852e78"},
 	{multihash.SHAKE_128, 32, "foo", "1820f84e95cb5fbd2038863ab27d3cdeac295ad2d4ab96ad1f4b070c0bf36078ef08"},
