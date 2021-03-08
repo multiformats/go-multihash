@@ -22,10 +22,9 @@ func Sum(data []byte, code uint64, length int) (Multihash, error) {
 	// Feed data in.
 	hasher.Write(data)
 
-	// Compute hash.
-	//  Use a fixed size array here: should keep things on the stack.
-	var space [64]byte
-	sum := hasher.Sum(space[0:0])
+	// Compute final hash.
+	//  A new slice is allocated.  FUTURE: see other comment below about allocation, and review together with this line to try to improve.
+	sum := hasher.Sum(nil)
 
 	// Deal with any truncation.
 	if length < 0 {
@@ -39,6 +38,6 @@ func Sum(data []byte, code uint64, length int) (Multihash, error) {
 	}
 
 	// Put the multihash metainfo bytes at the front of the buffer.
-	// FIXME: this does many avoidable allocations, but it's the shape of the Encode method arguments that forces this.
+	//  FUTURE: try to improve allocations here.  Encode does several which are probably avoidable, but it's the shape of the Encode method arguments that forces this.
 	return Encode(sum, code)
 }
