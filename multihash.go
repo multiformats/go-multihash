@@ -238,10 +238,10 @@ func Decode(buf []byte) (*DecodedMultihash, error) {
 
 // Encode a hash digest along with the specified function code.
 // Note: the length is derived from the length of the digest itself.
+//
+// The error return is legacy; it is always nil.
 func Encode(buf []byte, code uint64) ([]byte, error) {
-	// REVIEW: if we remove the strict ValidCode check, this can no longer error.  Change signiture?
-	// REVIEW: this function always causes heap allocs... but when used, this value is almost always going to be appended to another buffer (either as part of CID creation, or etc) -- should this whole function be rethought and alternatives offered?
-
+	// FUTURE: this function always causes heap allocs... but when used, this value is almost always going to be appended to another buffer (either as part of CID creation, or etc) -- should this whole function be rethought and alternatives offered?
 	newBuf := make([]byte, varint.UvarintSize(code)+varint.UvarintSize(uint64(len(buf)))+len(buf))
 	n := varint.PutUvarint(newBuf, code)
 	n += varint.PutUvarint(newBuf[n:], uint64(len(buf)))
