@@ -33,6 +33,9 @@ var registry = make(map[uint64]func() hash.Hash)
 // then this can be done by making a Register call with that effect at init time in the application's main package.
 // This should have the desired effect because the root of the import tree has its init time effect last.
 func Register(indicator uint64, hasherFactory func() hash.Hash) {
+	if hasherFactory == nil {
+		panic("not sensible to attempt to register a nil function")
+	}
 	registry[indicator] = hasherFactory
 }
 
