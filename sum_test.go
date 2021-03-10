@@ -123,6 +123,33 @@ func BenchmarkBlake2B(b *testing.B) {
 	}
 }
 
+func TestSmallerLengthHashID(t *testing.T) {
+
+	data := []byte("Identity hash input data.")
+	dataLength := len(data)
+
+	// Normal case: `length == len(data)`.
+	_, err := multihash.Sum(data, multihash.ID, dataLength)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Unconstrained length (-1): also allowed.
+	_, err = multihash.Sum(data, multihash.ID, -1)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Any other variation of those two scenarios should fail.
+	for l := (dataLength - 1); l >= 0; l-- {
+		_, err = multihash.Sum(data, multihash.ID, l)
+		if err == nil {
+			t.Fatal(fmt.Sprintf("identity hash of length %d smaller than data length %d didn't fail",
+				l, dataLength))
+		}
+	}
+}
+
 func TestTooLargeLength(t *testing.T) {
 	_, err := multihash.Sum([]byte("test"), multihash.SHA2_256, 33)
 	if err != multihash.ErrLenTooLarge {

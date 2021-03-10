@@ -2,6 +2,7 @@ package multihash
 
 import (
 	"errors"
+	"fmt"
 )
 
 // ErrSumNotSupported is returned when the Sum function code is not implemented
@@ -27,6 +28,7 @@ func Sum(data []byte, code uint64, length int) (Multihash, error) {
 	sum := hasher.Sum(nil)
 
 	// Deal with any truncation.
+	//  Unless it's an identity multihash.  Those have different rules.
 	if length < 0 {
 		length = hasher.Size()
 	}
@@ -34,6 +36,11 @@ func Sum(data []byte, code uint64, length int) (Multihash, error) {
 		return nil, ErrLenTooLarge
 	}
 	if length >= 0 {
+		if code == IDENTITY {
+			if length != len(sum) {
+				return nil, fmt.Errorf("the length of the identity hash (%d) must be equal to the length of the data (%d)", length, len(sum))
+			}
+		}
 		sum = sum[:length]
 	}
 
