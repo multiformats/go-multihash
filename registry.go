@@ -38,6 +38,7 @@ func Register(indicator uint64, hasherFactory func() hash.Hash) {
 		panic("not sensible to attempt to register a nil function")
 	}
 	registry[indicator] = hasherFactory
+	DefaultLengths[indicator] = hasherFactory().Size()
 }
 
 // GetHasher returns a new hash.Hash according to the indicator code number provided.
@@ -59,6 +60,12 @@ func GetHasher(indicator uint64) (hash.Hash, error) {
 	}
 	return factory(), nil
 }
+
+// DefaultLengths maps a multihash indicator code to the output size for that hash, in units of bytes.
+//
+// This map is populated when a hash function is registered by the Register function.
+// It's effectively a shortcut for asking Size() on the hash.Hash.
+var DefaultLengths = map[uint64]int{}
 
 func init() {
 	Register(IDENTITY, func() hash.Hash { return &identityMultihash{} })
