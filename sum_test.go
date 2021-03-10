@@ -3,6 +3,7 @@ package multihash_test
 import (
 	"bytes"
 	"encoding/hex"
+	"errors"
 	"fmt"
 	"runtime"
 	"testing"
@@ -132,8 +133,9 @@ func TestTooLargeLength(t *testing.T) {
 func TestBasicSum(t *testing.T) {
 	for code, name := range multihash.Codes {
 		_, err := multihash.Sum([]byte("test"), code, -1)
-		switch err {
-		case multihash.ErrSumNotSupported, nil:
+		switch {
+		case errors.Is(err, multihash.ErrSumNotSupported):
+		case err == nil:
 		default:
 			t.Errorf("unexpected error for %s: %s", name, err)
 		}

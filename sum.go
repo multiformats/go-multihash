@@ -5,7 +5,7 @@ import (
 )
 
 // ErrSumNotSupported is returned when the Sum function code is not implemented
-var ErrSumNotSupported = errors.New("Function not implemented. Complain to lib maintainer.")
+var ErrSumNotSupported = errors.New("no such hash registered")
 
 var ErrLenTooLarge = errors.New("requested length was too large for digest")
 

@@ -5,6 +5,7 @@ import (
 	"crypto/sha1"
 	"crypto/sha256"
 	"crypto/sha512"
+	"fmt"
 	"hash"
 )
 
@@ -50,11 +51,11 @@ func Register(indicator uint64, hasherFactory func() hash.Hash) {
 // Other hash implementations can be made available by using the Register function.
 // The 'go-mulithash/register/*' packages can also be imported to gain more common hash functions.
 //
-// If an error is returned, it will be ErrSumNotSupported.
+// If an error is returned, it will match `errors.Is(err, ErrSumNotSupported)`.
 func GetHasher(indicator uint64) (hash.Hash, error) {
 	factory, exists := registry[indicator]
 	if !exists {
-		return nil, ErrSumNotSupported // REVIEW: it's unfortunate that this error doesn't say what code was missing.  Also "NotSupported" is a bit of a misnomer now.
+		return nil, fmt.Errorf("unknown multihash code %d (0x%x): %w", indicator, indicator, ErrSumNotSupported)
 	}
 	return factory(), nil
 }
