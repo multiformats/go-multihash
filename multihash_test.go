@@ -224,16 +224,6 @@ func ExampleDecode() {
 	// obj: sha1 0x11 20 0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33
 }
 
-func TestValidCode(t *testing.T) {
-	for i := uint64(0); i < 0xff; i++ {
-		_, ok := tCodes[i]
-
-		if ValidCode(i) != ok {
-			t.Error("ValidCode incorrect for: ", i)
-		}
-	}
-}
-
 func TestCast(t *testing.T) {
 	for _, tc := range testCases {
 		ob, err := hex.DecodeString(tc.hex)

@@ -110,8 +110,13 @@ func (o *Options) ParseError() error {
 		}
 		o.Length = o.Length / 8
 
-		if o.Length > mh.DefaultLengths[o.AlgorithmCode] {
-			o.Length = mh.DefaultLengths[o.AlgorithmCode]
+		h, _ := mh.GetHasher(o.AlgorithmCode)
+		hsize := 0
+		if h != nil {
+			hsize = h.Size()
+		}
+		if o.Length > hsize {
+			o.Length = hsize
 		}
 	}
 	return nil
