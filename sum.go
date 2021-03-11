@@ -3,10 +3,12 @@ package multihash
 import (
 	"errors"
 	"fmt"
+
+	mhreg "github.com/multiformats/go-multihash/core"
 )
 
 // ErrSumNotSupported is returned when the Sum function code is not implemented
-var ErrSumNotSupported = errors.New("no such hash registered")
+var ErrSumNotSupported = mhreg.ErrSumNotSupported
 
 var ErrLenTooLarge = errors.New("requested length was too large for digest")
 

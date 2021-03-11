@@ -18,7 +18,7 @@ import (
 	"github.com/minio/blake2b-simd"
 	"golang.org/x/crypto/blake2s"
 
-	"github.com/multiformats/go-multihash"
+	"github.com/multiformats/go-multihash/core"
 )
 
 const (
