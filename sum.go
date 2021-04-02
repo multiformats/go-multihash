@@ -1,8 +1,10 @@
 package multihash
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
+	"io"
 
 	mhreg "github.com/multiformats/go-multihash/core"
 )
@@ -13,9 +15,16 @@ var ErrSumNotSupported = mhreg.ErrSumNotSupported
 var ErrLenTooLarge = errors.New("requested length was too large for digest")
 
 // Sum obtains the cryptographic sum of a given buffer. The length parameter
-// indicates the length of the resulting digest and passing a negative value
-// use default length values for the selected hash function.
+// indicates the length of the resulting digest. Passing a negative value uses
+// default length values for the selected hash function.
 func Sum(data []byte, code uint64, length int) (Multihash, error) {
+	return SumStream(bytes.NewReader(data), code, length)
+}
+
+// Sum obtains the cryptographic sum of a given stream. The length parameter
+// indicates the length of the resulting digest. Passing a negative value uses
+// default length values for the selected hash function.
+func SumStream(r io.Reader, code uint64, length int) (Multihash, error) {
 	// Get the algorithm.
 	hasher, err := GetHasher(code)
 	if err != nil {
@@ -23,7 +32,9 @@ func Sum(data []byte, code uint64, length int) (Multihash, error) {
 	}
 
 	// Feed data in.
-	hasher.Write(data)
+	if _, err = io.Copy(hasher, r); err != nil {
+		return nil, err
+	}
 
 	// Compute final hash.
 	//  A new slice is allocated.  FUTURE: see other comment below about allocation, and review together with this line to try to improve.

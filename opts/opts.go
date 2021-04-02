@@ -8,7 +8,6 @@ import (
 	"flag"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"sort"
 	"strings"
 
@@ -149,10 +148,5 @@ func (o *Options) Check(r io.Reader, h1 mh.Multihash) error {
 
 // Multihash reads all the data in r and calculates its multihash.
 func (o *Options) Multihash(r io.Reader) (mh.Multihash, error) {
-	b, err := ioutil.ReadAll(r)
-	if err != nil {
-		return nil, err
-	}
-
-	return mh.Sum(b, o.AlgorithmCode, o.Length)
+	return mh.SumStream(r, o.AlgorithmCode, o.Length)
 }
