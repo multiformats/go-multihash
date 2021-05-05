@@ -23,7 +23,6 @@ Options:
 var opts *mhopts.Options
 var checkRaw string
 var checkMh mh.Multihash
-var inputFilename string
 var quiet bool
 var help bool
 
@@ -70,13 +69,10 @@ func getInput() (io.ReadCloser, error) {
 
 	switch {
 	case len(args) < 1:
-		inputFilename = "-"
 		return os.Stdin, nil
 	case args[0] == "-":
-		inputFilename = "-"
 		return os.Stdin, nil
 	default:
-		inputFilename = args[0]
 		f, err := os.Open(args[0])
 		if err != nil {
 			return nil, fmt.Errorf("failed to open '%s': %s", args[0], err)

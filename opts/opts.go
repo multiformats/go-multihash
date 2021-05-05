@@ -100,7 +100,7 @@ func (o *Options) ParseError() error {
 	var found bool
 	o.AlgorithmCode, found = mh.Names[o.Algorithm]
 	if !found {
-		return fmt.Errorf("algorithm '%s' not found (lib error, pls report).", o.Algorithm)
+		return fmt.Errorf("algorithm '%s' not found (lib error, pls report)", o.Algorithm)
 	}
 
 	if o.Length >= 0 {
