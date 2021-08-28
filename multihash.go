@@ -51,6 +51,7 @@ const (
 	KECCAK_256 = 0x1B
 	KECCAK_384 = 0x1C
 	KECCAK_512 = 0x1D
+	BLAKE3     = 0x1E
 
 	SHAKE_128 = 0x18
 	SHAKE_256 = 0x19
@@ -108,6 +109,7 @@ var Names = map[string]uint64{
 	"keccak-256":                KECCAK_256,
 	"keccak-384":                KECCAK_384,
 	"keccak-512":                KECCAK_512,
+	"blake3":                    BLAKE3,
 	"shake-128":                 SHAKE_128,
 	"shake-256":                 SHAKE_256,
 	"sha2-256-trunc254-padded":  SHA2_256_TRUNC254_PADDED,
@@ -132,6 +134,7 @@ var Codes = map[uint64]string{
 	KECCAK_256:                "keccak-256",
 	KECCAK_384:                "keccak-384",
 	KECCAK_512:                "keccak-512",
+	BLAKE3:                    "blake3",
 	SHAKE_128:                 "shake-128",
 	SHAKE_256:                 "shake-256",
 	SHA2_256_TRUNC254_PADDED:  "sha2-256-trunc254-padded",

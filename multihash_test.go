@@ -28,6 +28,7 @@ var tCodes = map[uint64]string{
 	0x1B:   "keccak-256",
 	0x1C:   "keccak-384",
 	0x1D:   "keccak-512",
+	0x1E:   "blake3",
 	0x18:   "shake-128",
 	0x19:   "shake-256",
 	0x1100: "x11",
