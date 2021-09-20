@@ -19,6 +19,7 @@ const (
 	KECCAK_256   = 0x1B
 	KECCAK_384   = 0x1C
 	KECCAK_512   = 0x1D
+	BLAKE3       = 0x1E
 	SHAKE_128    = 0x18
 	SHAKE_256    = 0x19
 	MD5          = 0xd5
