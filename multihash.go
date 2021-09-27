@@ -173,12 +173,12 @@ type DecodedMultihash struct {
 type Multihash []byte
 
 // HexString returns the hex-encoded representation of a multihash.
-func (m *Multihash) HexString() string {
-	return hex.EncodeToString([]byte(*m))
+func (m Multihash) HexString() string {
+	return hex.EncodeToString([]byte(m))
 }
 
 // String is an alias to HexString().
-func (m *Multihash) String() string {
+func (m Multihash) String() string {
 	return m.HexString()
 }
 
