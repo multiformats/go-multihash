@@ -9,8 +9,12 @@ var ErrSumNotSupported = errors.New("no such hash registered")
 const (
 	IDENTITY     = 0x00
 	SHA1         = 0x11
+	SHA2_224     = 0x1013
 	SHA2_256     = 0x12
+	SHA2_384     = 0x20
 	SHA2_512     = 0x13
+	SHA2_512_224 = 0x1014
+	SHA2_512_256 = 0x1015
 	SHA3_224     = 0x17
 	SHA3_256     = 0x16
 	SHA3_384     = 0x15
