@@ -21,7 +21,7 @@ func TestSpec(t *testing.T) {
 
 	reader := csv.NewReader(file)
 	reader.LazyQuotes = false
-	reader.FieldsPerRecord = 4
+	reader.FieldsPerRecord = 5
 	reader.TrimLeadingSpace = true
 
 	values, err := reader.ReadAll()
