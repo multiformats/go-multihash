@@ -19,5 +19,22 @@ import (
 )
 
 func init() {
-	multihash.Register(multihash.MURMUR3X64_64, func() hash.Hash { h := murmur3.New64(); return h })
+	multihash.Register(multihash.MURMUR3X64_64, func() hash.Hash { return murmur64{murmur3.New64()} })
+}
+
+// A wrapper is needed to export the correct size, because murmur3 incorrectly advertises Hash64 as a 128bit hash.
+type murmur64 struct {
+	hash.Hash64
+}
+
+func (murmur64) BlockSize() int {
+	return 1
+}
+
+func (x murmur64) Size() int {
+	return 8
+}
+
+func (x murmur64) Sum(digest []byte) []byte {
+	return x.Hash64.Sum(digest)
 }
