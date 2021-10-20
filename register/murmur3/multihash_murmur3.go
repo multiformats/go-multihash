@@ -19,5 +19,5 @@ import (
 )
 
 func init() {
-	multihash.Register(multihash.MURMUR3_128, func() hash.Hash { h := murmur3.New128(); return h })
+	multihash.Register(multihash.MURMUR3X64_64, func() hash.Hash { h := murmur3.New64(); return h })
 }
