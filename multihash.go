@@ -65,9 +65,9 @@ const (
 
 	DBL_SHA2_256 = 0x56
 
-	MURMUR3_128 = 0x22
-	// Deprecated: use MURMUR3_128
-	MURMUR3 = MURMUR3_128
+	MURMUR3X64_64 = 0x22
+	// Deprecated: use MURMUR3X64_64
+	MURMUR3 = MURMUR3X64_64
 
 	SHA2_256_TRUNC254_PADDED  = 0x1012
 	X11                       = 0x1100
@@ -104,7 +104,7 @@ var Names = map[string]uint64{
 	"sha3-384":                  SHA3_384,
 	"sha3-512":                  SHA3_512,
 	"dbl-sha2-256":              DBL_SHA2_256,
-	"murmur3-128":               MURMUR3_128,
+	"murmur3-x64-64":            MURMUR3X64_64,
 	"keccak-224":                KECCAK_224,
 	"keccak-256":                KECCAK_256,
 	"keccak-384":                KECCAK_384,
@@ -129,7 +129,7 @@ var Codes = map[uint64]string{
 	SHA3_384:                  "sha3-384",
 	SHA3_512:                  "sha3-512",
 	DBL_SHA2_256:              "dbl-sha2-256",
-	MURMUR3_128:               "murmur3-128",
+	MURMUR3X64_64:             "murmur3-x64-64",
 	KECCAK_224:                "keccak-224",
 	KECCAK_256:                "keccak-256",
 	KECCAK_384:                "keccak-384",
