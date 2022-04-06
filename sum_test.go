@@ -144,8 +144,8 @@ func TestSmallerLengthHashID(t *testing.T) {
 	for l := (dataLength - 1); l >= 0; l-- {
 		_, err = multihash.Sum(data, multihash.ID, l)
 		if err == nil {
-			t.Fatal(fmt.Sprintf("identity hash of length %d smaller than data length %d didn't fail",
-				l, dataLength))
+			t.Fatalf("identity hash of length %d smaller than data length %d didn't fail",
+				l, dataLength)
 		}
 	}
 }
