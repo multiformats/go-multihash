@@ -59,6 +59,7 @@ var testCases = []TestCase{
 	{"d41d8cd98f00b204e9800998ecf8427e", 0xd5, "md5"},
 	{"14fcb37dc45fa9a3c492557121bd4d461c0db40e5dcfcaa98498bd238486c307", 0x1012, "sha2-256-trunc254-padded"},
 	{"14fcb37dc45fa9a3c492557121bd4d461c0db40e5dcfcaa98498bd238486c307", 0xb401, "poseidon-bls12_381-a2-fc1"},
+	{"04e0bb39f30b1a3feb89f536c93be15055482df748674b00d26e5a75777702e9", 0x1e, "blake3"},
 }
 
 func (tc TestCase) Multihash() (Multihash, error) {
