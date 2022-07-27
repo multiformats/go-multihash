@@ -18,6 +18,6 @@ import (
 )
 
 func init() {
-	multihash.Register(multihash.BLAKE3, func() hash.Hash { h := blake3.New(32, nil); return h })
+	multihash.Register(multihash.BLAKE3, func() hash.Hash { h := blake3.New(128, nil); return h })
 
 }

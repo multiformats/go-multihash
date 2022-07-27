@@ -10,7 +10,8 @@ import (
 )
 
 // registry is a simple map which maps a multihash indicator number
-// to a standard golang Hash interface.
+// to a function : (size:int) -> ((hasher:hash.Hash), (bool:success))
+// The function may error (i.e., return (nil, false)) to signify that the hasher can't return that many bytes.
 //
 // Multihash indicator numbers are reserved and described in
 // https://github.com/multiformats/multicodec/blob/master/table.csv .
