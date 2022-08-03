@@ -19,7 +19,7 @@ import (
 //
 // Hashers which are available in the golang stdlib will be registered automatically.
 // Others can be added using the Register function.
-var registry = make(map[uint64]func(int) (hash.Hash, bool))
+var registry = make(map[uint64]func(int) (h hash.Hash, ok bool))
 
 // Register adds a new hash to the set available from GetHasher and Sum.
 //
