@@ -2,10 +2,13 @@ package multihash_test
 
 import (
 	"bytes"
+	"crypto/rand"
 	"encoding/hex"
 	"errors"
 	"fmt"
+	"io"
 	"runtime"
+	"sort"
 	"testing"
 
 	"github.com/multiformats/go-multihash"
@@ -175,5 +178,48 @@ func TestBasicSum(t *testing.T) {
 		default:
 			t.Errorf("unexpected error for %s: %s", name, err)
 		}
+	}
+}
+
+var sink []byte
+
+type codeNamePair struct {
+	id   uint64
+	name string
+}
+
+func BenchmarkSumAllLarge(b *testing.B) {
+	var data [1024 * 1024 * 16]byte
+	_, err := io.ReadFull(rand.Reader, data[:])
+	if err != nil {
+		b.Fatal(err)
+	}
+
+	// Write to a slice to sort elements
+	s := make([]codeNamePair, 0, len(multihash.Codes))
+	for id, name := range multihash.Codes {
+		s = append(s, codeNamePair{id, name})
+	}
+
+	sort.Slice(s, func(x, y int) bool {
+		return s[x].id < s[y].id
+	})
+
+	for _, v := range s {
+		h, e := multihash.GetHasher(v.id)
+		if h == nil || e != nil {
+			continue // Don't benchmark unsupported hashing functions
+		}
+
+		b.Run(v.name, func(b *testing.B) {
+			b.SetBytes(int64(len(data)))
+			for i := b.N; i > 0; i-- {
+				var err error
+				sink, err = multihash.Sum(data[:], v.id, -1)
+				if err != nil {
+					b.Fatal(err)
+				}
+			}
+		})
 	}
 }
