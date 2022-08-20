@@ -54,7 +54,7 @@ func main() {
 	buf, _ := hex.DecodeString("0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33")
 
 	// Create a new multihash with it.
-	mHashBuf, _ := multihash.EncodeName(buf, "sha1")
+	mHashBuf := multihash.EncodeName(buf, "sha1")
 	// Print the multihash as hex string
 	fmt.Printf("hex: %s\n", hex.EncodeToString(mHashBuf))
 

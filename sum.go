@@ -71,5 +71,5 @@ func encodeHash(hasher hash.Hash, code uint64, length int) (Multihash, error) {
 
 	// Put the multihash metainfo bytes at the front of the buffer.
 	//  FUTURE: try to improve allocations here.  Encode does several which are probably avoidable, but it's the shape of the Encode method arguments that forces this.
-	return Encode(sum, code)
+	return Encode(sum, code), nil
 }

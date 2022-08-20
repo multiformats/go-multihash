@@ -94,22 +94,14 @@ func TestEncode(t *testing.T) {
 
 		nb := append(pre[:n], ob...)
 
-		encC, err := Encode(ob, tc.code)
-		if err != nil {
-			t.Error(err)
-			continue
-		}
+		encC := Encode(ob, tc.code)
 
 		if !bytes.Equal(encC, nb) {
 			t.Error("encoded byte mismatch: ", encC, nb)
 			t.Error(hex.Dump(nb))
 		}
 
-		encN, err := EncodeName(ob, tc.name)
-		if err != nil {
-			t.Error(err)
-			continue
-		}
+		encN := EncodeName(ob, tc.name)
 
 		if !bytes.Equal(encN, nb) {
 			t.Error("encoded byte mismatch: ", encN, nb)
@@ -128,7 +120,7 @@ func TestEncode(t *testing.T) {
 func ExampleEncodeName() {
 	// ignores errors for simplicity - don't do that at home.
 	buf, _ := hex.DecodeString("0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33")
-	mhbuf, _ := EncodeName(buf, "sha1")
+	mhbuf := EncodeName(buf, "sha1")
 	mhhex := hex.EncodeToString(mhbuf)
 	fmt.Printf("hex: %v\n", mhhex)
 
@@ -217,7 +209,7 @@ func TestTable(t *testing.T) {
 func ExampleDecode() {
 	// ignores errors for simplicity - don't do that at home.
 	buf, _ := hex.DecodeString("0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33")
-	mhbuf, _ := EncodeName(buf, "sha1")
+	mhbuf := EncodeName(buf, "sha1")
 	o, _ := Decode(mhbuf)
 	mhhex := hex.EncodeToString(o.Digest)
 	fmt.Printf("obj: %v 0x%x %d %s\n", o.Name, o.Code, o.Length, mhhex)
