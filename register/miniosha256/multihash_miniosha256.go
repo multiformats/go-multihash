@@ -1,14 +1,14 @@
 /*
-	This package has no purpose except to perform registration of multihashes.
+This package has no purpose except to perform registration of multihashes.
 
-	It is meant to be used as a side-effecting import, e.g.
+It is meant to be used as a side-effecting import, e.g.
 
-		import (
-			_ "github.com/multiformats/go-multihash/register/miniosha256"
-		)
+	import (
+		_ "github.com/multiformats/go-multihash/register/miniosha256"
+	)
 
-	This package registers alternative implementations for sha2-256, using
-	the github.com/minio/sha256-simd library.
+This package registers alternative implementations for sha2-256, using
+the github.com/minio/sha256-simd library.
 */
 package miniosha256
 
