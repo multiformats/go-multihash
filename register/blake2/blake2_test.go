@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/multiformats/go-multihash/core"
+	multihash "github.com/multiformats/go-multihash/core"
 )
 
 func mustHexDecode(s string) []byte {

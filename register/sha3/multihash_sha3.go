@@ -18,7 +18,7 @@ import (
 
 	"golang.org/x/crypto/sha3"
 
-	"github.com/multiformats/go-multihash/core"
+	multihash "github.com/multiformats/go-multihash/core"
 )
 
 func init() {

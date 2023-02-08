@@ -14,7 +14,7 @@ import (
 
 	"lukechampine.com/blake3"
 
-	"github.com/multiformats/go-multihash/core"
+	multihash "github.com/multiformats/go-multihash/core"
 )
 
 const DefaultSize = 32
