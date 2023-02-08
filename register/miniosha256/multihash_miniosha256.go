@@ -15,7 +15,7 @@ package miniosha256
 import (
 	"github.com/minio/sha256-simd"
 
-	"github.com/multiformats/go-multihash/core"
+	multihash "github.com/multiformats/go-multihash/core"
 )
 
 func init() {
