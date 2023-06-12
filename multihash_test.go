@@ -151,27 +151,29 @@ func TestDecode(t *testing.T) {
 
 		nb := append(pre[:n], ob...)
 
-		dec, err := Decode(nb)
-		if err != nil {
-			t.Error(err)
-			continue
-		}
+		mustNotAllocateMore(t, 0, func() {
+			dec, err := Decode(nb)
+			if err != nil {
+				t.Error(err)
+				return
+			}
 
-		if dec.Code != tc.code {
-			t.Error("decoded code mismatch: ", dec.Code, tc.code)
-		}
+			if dec.Code != tc.code {
+				t.Error("decoded code mismatch: ", dec.Code, tc.code)
+			}
 
-		if dec.Name != tc.name {
-			t.Error("decoded name mismatch: ", dec.Name, tc.name)
-		}
+			if dec.Name != tc.name {
+				t.Error("decoded name mismatch: ", dec.Name, tc.name)
+			}
 
-		if dec.Length != len(ob) {
-			t.Error("decoded length mismatch: ", dec.Length, len(ob))
-		}
+			if dec.Length != len(ob) {
+				t.Error("decoded length mismatch: ", dec.Length, len(ob))
+			}
 
-		if !bytes.Equal(dec.Digest, ob) {
-			t.Error("decoded byte mismatch: ", dec.Digest, ob)
-		}
+			if !bytes.Equal(dec.Digest, ob) {
+				t.Error("decoded byte mismatch: ", dec.Digest, ob)
+			}
+		})
 	}
 }
 
@@ -242,15 +244,20 @@ func TestCast(t *testing.T) {
 
 		nb := append(pre[:n], ob...)
 
-		if _, err := Cast(nb); err != nil {
-			t.Error(err)
-			continue
-		}
+		mustNotAllocateMore(t, 0, func() {
+			if _, err := Cast(nb); err != nil {
+				t.Error(err)
+				return
+			}
+		})
 
-		if _, err = Cast(ob); err == nil {
-			t.Error("cast failed to detect non-multihash")
-			continue
-		}
+		// 1 for the error object.
+		mustNotAllocateMore(t, 1, func() {
+			if _, err = Cast(ob); err == nil {
+				t.Error("cast failed to detect non-multihash")
+				return
+			}
+		})
 	}
 }
 
@@ -343,8 +350,29 @@ func BenchmarkDecode(b *testing.B) {
 	pre[1] = byte(uint8(len(ob)))
 	nb := append(pre, ob...)
 
+	b.ReportAllocs()
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		Decode(nb)
+	}
+}
+
+func BenchmarkCast(b *testing.B) {
+	tc := testCases[0]
+	ob, err := hex.DecodeString(tc.hex)
+	if err != nil {
+		b.Error(err)
+		return
+	}
+
+	pre := make([]byte, 2)
+	pre[0] = byte(uint8(tc.code))
+	pre[1] = byte(uint8(len(ob)))
+	nb := append(pre, ob...)
+
+	b.ReportAllocs()
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		Cast(nb)
 	}
 }
