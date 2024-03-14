@@ -6,7 +6,7 @@ import (
 	mhreg "github.com/multiformats/go-multihash/core"
 
 	_ "github.com/multiformats/go-multihash/register/all"
-	_ "github.com/multiformats/go-multihash/register/miniosha256"
+	_ "github.com/multiformats/go-multihash/register/sha256"
 )
 
 // Register is an alias for Register in the core package.
