@@ -9,7 +9,7 @@
 //	)
 //
 // This package registers alternative implementations for sha2-256, using
-// the github.com/minio/sha256-simd library for go1.20 and bellow. Go 1.21 and
+// the github.com/minio/sha256-simd library for go1.20 and below. Go 1.21 and
 // later fallback to [github.com/multiformats/go-multihash/register/sha256].
 //
 // Deprecated: please switch to [github.com/multiformats/go-multihash/register/sha256]
