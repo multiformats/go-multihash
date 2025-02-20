@@ -227,7 +227,7 @@ func Decode(buf []byte) (*DecodedMultihash, error) {
 	// leak dm the compiler will use a stack allocation instead.
 	// If you do not outline this &dm always heap allocate since the pointer is
 	// returned which cause a heap allocation because Decode's stack frame is
-	// about to disapear.
+	// about to disappear.
 	dm, err := decode(buf)
 	if err != nil {
 		return nil, err
