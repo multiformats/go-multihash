@@ -165,7 +165,7 @@ func uvarint(buf []byte) (uint64, []byte, error) {
 type DecodedMultihash struct {
 	Code   uint64
 	Name   string
-	Length int    // Length is just int as it is type of len() opearator
+	Length int    // Length is just int as it is type of len() operator
 	Digest []byte // Digest holds the raw multihash bytes
 }
 
