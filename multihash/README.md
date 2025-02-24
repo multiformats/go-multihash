@@ -85,7 +85,7 @@ Qmf1QjEXDmqBm7RqHKqFGNUyhzUjnX7cmgKMrGzzPceZDQ
 #### Digest Length
 
 ```sh
-# we're outputing hex (good byte alignment) to show the codes changing
+# we're outputting hex (good byte alignment) to show the codes changing
 # notice the multihash code (first 2 chars) differs!
 > multihash -e hex -a sha2-256 -l 256 < main.go
 1220cf9aa2b8a38b9b49d135095390059a57473e97aceb5fcae25d67a8b6feb58275
