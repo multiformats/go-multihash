@@ -70,9 +70,10 @@ const (
 	// Deprecated: use MURMUR3X64_64
 	MURMUR3 = MURMUR3X64_64
 
-	SHA2_256_TRUNC254_PADDED  = 0x1012
-	X11                       = 0x1100
-	POSEIDON_BLS12_381_A1_FC1 = 0xb401
+	FR32_SHA256_TRUNC254_PADBINTREE = 0x1011
+	SHA2_256_TRUNC254_PADDED        = 0x1012
+	X11                             = 0x1100
+	POSEIDON_BLS12_381_A1_FC1       = 0xb401
 )
 
 func init() {
@@ -95,53 +96,55 @@ func init() {
 
 // Names maps the name of a hash to the code
 var Names = map[string]uint64{
-	"identity":                  IDENTITY,
-	"sha1":                      SHA1,
-	"sha2-256":                  SHA2_256,
-	"sha2-512":                  SHA2_512,
-	"sha3":                      SHA3_512,
-	"sha3-224":                  SHA3_224,
-	"sha3-256":                  SHA3_256,
-	"sha3-384":                  SHA3_384,
-	"sha3-512":                  SHA3_512,
-	"dbl-sha2-256":              DBL_SHA2_256,
-	"murmur3-x64-64":            MURMUR3X64_64,
-	"keccak-224":                KECCAK_224,
-	"keccak-256":                KECCAK_256,
-	"keccak-384":                KECCAK_384,
-	"keccak-512":                KECCAK_512,
-	"blake3":                    BLAKE3,
-	"shake-128":                 SHAKE_128,
-	"shake-256":                 SHAKE_256,
-	"sha2-256-trunc254-padded":  SHA2_256_TRUNC254_PADDED,
-	"x11":                       X11,
-	"md5":                       MD5,
-	"poseidon-bls12_381-a2-fc1": POSEIDON_BLS12_381_A1_FC1,
+	"identity":                        IDENTITY,
+	"sha1":                            SHA1,
+	"sha2-256":                        SHA2_256,
+	"sha2-512":                        SHA2_512,
+	"sha3":                            SHA3_512,
+	"sha3-224":                        SHA3_224,
+	"sha3-256":                        SHA3_256,
+	"sha3-384":                        SHA3_384,
+	"sha3-512":                        SHA3_512,
+	"dbl-sha2-256":                    DBL_SHA2_256,
+	"murmur3-x64-64":                  MURMUR3X64_64,
+	"keccak-224":                      KECCAK_224,
+	"keccak-256":                      KECCAK_256,
+	"keccak-384":                      KECCAK_384,
+	"keccak-512":                      KECCAK_512,
+	"blake3":                          BLAKE3,
+	"shake-128":                       SHAKE_128,
+	"shake-256":                       SHAKE_256,
+	"fr32-sha256-trunc254-padbintree": FR32_SHA256_TRUNC254_PADBINTREE,
+	"sha2-256-trunc254-padded":        SHA2_256_TRUNC254_PADDED,
+	"x11":                             X11,
+	"md5":                             MD5,
+	"poseidon-bls12_381-a2-fc1":       POSEIDON_BLS12_381_A1_FC1,
 }
 
 // Codes maps a hash code to it's name
 var Codes = map[uint64]string{
-	IDENTITY:                  "identity",
-	SHA1:                      "sha1",
-	SHA2_256:                  "sha2-256",
-	SHA2_512:                  "sha2-512",
-	SHA3_224:                  "sha3-224",
-	SHA3_256:                  "sha3-256",
-	SHA3_384:                  "sha3-384",
-	SHA3_512:                  "sha3-512",
-	DBL_SHA2_256:              "dbl-sha2-256",
-	MURMUR3X64_64:             "murmur3-x64-64",
-	KECCAK_224:                "keccak-224",
-	KECCAK_256:                "keccak-256",
-	KECCAK_384:                "keccak-384",
-	KECCAK_512:                "keccak-512",
-	BLAKE3:                    "blake3",
-	SHAKE_128:                 "shake-128",
-	SHAKE_256:                 "shake-256",
-	SHA2_256_TRUNC254_PADDED:  "sha2-256-trunc254-padded",
-	X11:                       "x11",
-	POSEIDON_BLS12_381_A1_FC1: "poseidon-bls12_381-a2-fc1",
-	MD5:                       "md5",
+	IDENTITY:                        "identity",
+	SHA1:                            "sha1",
+	SHA2_256:                        "sha2-256",
+	SHA2_512:                        "sha2-512",
+	SHA3_224:                        "sha3-224",
+	SHA3_256:                        "sha3-256",
+	SHA3_384:                        "sha3-384",
+	SHA3_512:                        "sha3-512",
+	DBL_SHA2_256:                    "dbl-sha2-256",
+	MURMUR3X64_64:                   "murmur3-x64-64",
+	KECCAK_224:                      "keccak-224",
+	KECCAK_256:                      "keccak-256",
+	KECCAK_384:                      "keccak-384",
+	KECCAK_512:                      "keccak-512",
+	BLAKE3:                          "blake3",
+	SHAKE_128:                       "shake-128",
+	SHAKE_256:                       "shake-256",
+	FR32_SHA256_TRUNC254_PADBINTREE: "fr32-sha256-trunc254-padbintree",
+	SHA2_256_TRUNC254_PADDED:        "sha2-256-trunc254-padded",
+	X11:                             "x11",
+	POSEIDON_BLS12_381_A1_FC1:       "poseidon-bls12_381-a2-fc1",
+	MD5:                             "md5",
 }
 
 // reads a varint from buf and returns bytes read.

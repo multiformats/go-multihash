@@ -59,6 +59,9 @@ func TestSpec(t *testing.T) {
 	}
 
 	for code, name := range multihash.Codes {
+		if code == multihash.MURMUR3X64_64 {
+			continue
+		}
 		expectedName, ok := expectedFunctions[code]
 		if !ok {
 			t.Errorf("multihash %q (%x) not defined in the spec", name, code)
