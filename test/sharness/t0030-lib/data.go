@@ -48,7 +48,7 @@ func main() {
 	}
 }
 
-func die(v ...interface{}) {
+func die(v ...any) {
 	fmt.Fprint(os.Stderr, v...)
 	fmt.Fprint(os.Stderr, "\n")
 	os.Exit(1)

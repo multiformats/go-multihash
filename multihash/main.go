@@ -130,7 +130,7 @@ func main() {
 	inp.Close()
 }
 
-func die(v ...interface{}) {
+func die(v ...any) {
 	if !quiet {
 		fmt.Fprint(os.Stderr, v...)
 		fmt.Fprint(os.Stderr, "\n")
