@@ -74,6 +74,15 @@ func (r *mhReader) ReadMultihash() (Multihash, error) {
 		return nil, errors.New("digest too long, supporting only <= 2^31-1")
 	}
 
+	// length is read from the input, so it must not size the allocation on its own.
+	// The check above only rules out lengths above 2^31-1, which still lets a five
+	// byte varint reserve gigabytes before a single digest byte has arrived. When
+	// the underlying reader can report how much data is left, refuse a length it
+	// cannot possibly satisfy.
+	if lr, ok := r.r.(interface{ Len() int }); ok && uint64(lr.Len()) < length {
+		return nil, io.ErrUnexpectedEOF
+	}
+
 	buf := make([]byte, varint.UvarintSize(code)+varint.UvarintSize(length)+int(length))
 	n := varint.PutUvarint(buf, code)
 	n += varint.PutUvarint(buf[n:], length)
