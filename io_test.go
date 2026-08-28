@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/binary"
 	"io"
+	"runtime"
 	"testing"
 )
 
@@ -103,15 +104,27 @@ func TestWriter(t *testing.T) {
 }
 
 // TestReadMultihashOverlongLength checks that a digest length larger than the data
-// behind it is refused before it is used to size an allocation, and that a length
-// matching the data is still accepted.
+// behind it does not size the buffer before that data has arrived, and that a
+// length matching the data is still accepted. The assertion is on allocation
+// volume, not merely on getting an error: an overlong length errors either way,
+// once io.ReadFull runs out of input.
 func TestReadMultihashOverlongLength(t *testing.T) {
 	// sha2-256 code, then a length of 2^28, then nothing.
 	var hostile []byte
 	hostile = binary.AppendUvarint(hostile, SHA2_256)
 	hostile = binary.AppendUvarint(hostile, 1<<28)
-	if _, err := NewReader(bytes.NewReader(hostile)).ReadMultihash(); err == nil {
+
+	var before, after runtime.MemStats
+	runtime.GC()
+	runtime.ReadMemStats(&before)
+	_, err := NewReader(bytes.NewReader(hostile)).ReadMultihash()
+	runtime.ReadMemStats(&after)
+
+	if err == nil {
 		t.Fatal("expected an error for a length with no digest behind it")
+	}
+	if allocated := after.TotalAlloc - before.TotalAlloc; allocated > 1<<20 {
+		t.Fatalf("reading a multihash that claims a 256MiB digest allocated %d bytes", allocated)
 	}
 
 	// The same shape with a length that the data does satisfy must still parse.
