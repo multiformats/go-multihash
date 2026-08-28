@@ -2,6 +2,7 @@ package multihash
 
 import (
 	"bytes"
+	"encoding/binary"
 	"io"
 	"testing"
 )
@@ -98,5 +99,31 @@ func TestWriter(t *testing.T) {
 		if !bytes.Equal(m, buf2) {
 			t.Error("m and buf2 should be equal")
 		}
+	}
+}
+
+// TestReadMultihashOverlongLength checks that a digest length larger than the data
+// behind it is refused before it is used to size an allocation, and that a length
+// matching the data is still accepted.
+func TestReadMultihashOverlongLength(t *testing.T) {
+	// sha2-256 code, then a length of 2^28, then nothing.
+	var hostile []byte
+	hostile = binary.AppendUvarint(hostile, SHA2_256)
+	hostile = binary.AppendUvarint(hostile, 1<<28)
+	if _, err := NewReader(bytes.NewReader(hostile)).ReadMultihash(); err == nil {
+		t.Fatal("expected an error for a length with no digest behind it")
+	}
+
+	// The same shape with a length that the data does satisfy must still parse.
+	good, err := Sum([]byte("foo"), SHA2_256, -1)
+	if err != nil {
+		t.Fatal(err)
+	}
+	got, err := NewReader(bytes.NewReader(good)).ReadMultihash()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !bytes.Equal(got, good) {
+		t.Fatalf("round trip changed the multihash: %x != %x", got, good)
 	}
 }
