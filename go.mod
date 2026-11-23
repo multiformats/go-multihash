@@ -1,7 +1,7 @@
 module github.com/multiformats/go-multihash
 
 require (
-	github.com/minio/sha256-simd v1.0.0
+	github.com/minio/sha256-simd v1.0.1
 	github.com/mr-tron/base58 v1.3.0
 	github.com/multiformats/go-varint v0.1.0
 	github.com/spaolacci/murmur3 v1.1.0
@@ -10,7 +10,7 @@ require (
 )
 
 require (
-	github.com/klauspost/cpuid/v2 v2.0.9 // indirect
+	github.com/klauspost/cpuid/v2 v2.2.3 // indirect
 	golang.org/x/sys v0.50.0 // indirect
 )
 
