@@ -6,7 +6,7 @@ require (
 	github.com/multiformats/go-varint v0.0.6
 	github.com/spaolacci/murmur3 v1.1.0
 	golang.org/x/crypto v0.59.0
-	lukechampine.com/blake3 v1.1.6
+	lukechampine.com/blake3 v1.4.1
 )
 
 require (
