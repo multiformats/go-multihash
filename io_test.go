@@ -1,9 +1,14 @@
 package multihash
 
 import (
+	"bufio"
 	"bytes"
+	"encoding/binary"
+	"errors"
 	"io"
+	"runtime"
 	"testing"
+	"testing/iotest"
 )
 
 type evilReader struct {
@@ -98,5 +103,73 @@ func TestWriter(t *testing.T) {
 		if !bytes.Equal(m, buf2) {
 			t.Error("m and buf2 should be equal")
 		}
+	}
+}
+
+func TestReadMultihashOverlongLength(t *testing.T) {
+	// A sha2-256 header claiming a 256MiB digest.
+	header := binary.AppendUvarint(nil, SHA2_256)
+	header = binary.AppendUvarint(header, 1<<28)
+
+	readers := map[string]func([]byte) io.Reader{
+		"bytes.Reader": func(b []byte) io.Reader { return bytes.NewReader(b) },
+		"bufio.Reader": func(b []byte) io.Reader { return bufio.NewReader(bytes.NewReader(b)) },
+		"evilReader":   func(b []byte) io.Reader { return &evilReader{b} },
+	}
+	for name, newReader := range readers {
+		t.Run(name, func(t *testing.T) {
+			for _, tail := range [][]byte{nil, []byte("partial")} {
+				var before, after runtime.MemStats
+				runtime.GC()
+				runtime.ReadMemStats(&before)
+				_, err := NewReader(newReader(append(header, tail...))).ReadMultihash()
+				runtime.ReadMemStats(&after)
+
+				want := io.ErrUnexpectedEOF
+				if len(tail) == 0 {
+					want = io.EOF
+				}
+				if !errors.Is(err, want) {
+					t.Fatalf("tail %q: expected %v, got %v", tail, want, err)
+				}
+				if allocated := after.TotalAlloc - before.TotalAlloc; allocated > 1<<20 {
+					t.Fatalf("tail %q: allocated %d bytes for a truncated 256MiB digest", tail, allocated)
+				}
+			}
+		})
+	}
+}
+
+func TestReadMultihashMultiChunk(t *testing.T) {
+	data := make([]byte, 3*digestPrealloc+17)
+	for i := range data {
+		data[i] = byte(i)
+	}
+	want, err := Sum(data, IDENTITY, -1)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	readers := map[string]io.Reader{
+		"bytes.Reader": bytes.NewReader(want),
+		"OneByte":      iotest.OneByteReader(bytes.NewReader(want)),
+		"DataErr":      iotest.DataErrReader(bytes.NewReader(want)),
+	}
+	for name, r := range readers {
+		t.Run(name, func(t *testing.T) {
+			got, err := NewReader(r).ReadMultihash()
+			if err != nil {
+				t.Fatal(err)
+			}
+			if !bytes.Equal(got, want) {
+				t.Fatal("round trip changed the multihash")
+			}
+		})
+	}
+
+	// Truncated after the preallocated region.
+	_, err = NewReader(bytes.NewReader(want[:len(want)-digestPrealloc])).ReadMultihash()
+	if !errors.Is(err, io.ErrUnexpectedEOF) {
+		t.Fatalf("expected %v, got %v", io.ErrUnexpectedEOF, err)
 	}
 }
